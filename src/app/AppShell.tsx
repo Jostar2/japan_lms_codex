@@ -46,8 +46,16 @@ function Topbar({ surface, onSurfaceChange }: TopbarProps) {
         </div>
       </div>
 
-      <div className="search-bar" role="search" aria-label="LMS search">
-        <span className="search-copy">강의·주제·학생·과제를 검색합니다</span>
+      <form className="search-bar" role="search" aria-label="LMS search" onSubmit={(event) => event.preventDefault()}>
+        <span className="search-kicker" aria-hidden="true">
+          Search
+        </span>
+        <input aria-label="강의, 주제, 학생, 과제 검색" placeholder="강의·주제·학생·과제 검색" type="search" />
+      </form>
+
+      <div className="topbar-context" aria-label="Current academic context">
+        <span>2026 봄학기</span>
+        <strong>데이터 마이닝</strong>
       </div>
 
       <div className="view-switch" role="group" aria-label="Surface switch">
@@ -82,26 +90,44 @@ interface LeftNavProps {
 }
 
 function LeftNav({ routeKey, routes, surface, onRouteChange }: LeftNavProps) {
+  const routeGroups = groupRoutes(routes);
+
   return (
     <nav className="app-nav" aria-label={`${surface === "student" ? "Student" : "Instructor"} navigation`}>
       <div className="nav-head">
-        <span className="snb-title">Navigation</span>
+        <span className="snb-title">{surface === "student" ? "Learner Workspace" : "Teaching Workspace"}</span>
       </div>
       <div className="nav-list">
-        {routes.map((item) => (
-          <button
-            className={`nav-item ${item.key === routeKey ? "active" : ""}`}
-            key={item.key}
-            type="button"
-            onClick={() => onRouteChange(item.key)}
-          >
-            <span>
-              <span className="nav-label">{item.label}</span>
-              <span className="nav-group">{item.group}</span>
-            </span>
-          </button>
+        {routeGroups.map((group) => (
+          <div className="nav-section" key={group.label}>
+            <div className="nav-section-label">{group.label}</div>
+            {group.items.map((item) => (
+              <button
+                aria-current={item.key === routeKey ? "page" : undefined}
+                className={`nav-item ${item.key === routeKey ? "active" : ""}`}
+                key={item.key}
+                type="button"
+                onClick={() => onRouteChange(item.key)}
+              >
+                <span>
+                  <span className="nav-label">{item.label}</span>
+                  <span className="nav-group">{item.entities.slice(0, 2).join(" · ")}</span>
+                </span>
+              </button>
+            ))}
+          </div>
         ))}
       </div>
     </nav>
   );
+}
+
+function groupRoutes(routes: SurfaceRoute[]): Array<{ label: string; items: SurfaceRoute[] }> {
+  const grouped = new Map<string, SurfaceRoute[]>();
+
+  for (const route of routes) {
+    grouped.set(route.group, [...(grouped.get(route.group) ?? []), route]);
+  }
+
+  return [...grouped.entries()].map(([label, items]) => ({ label, items }));
 }

@@ -21,10 +21,29 @@ export function StudentLectureRoute({ viewModel }: StudentLectureRouteProps) {
             Quick 5분
           </button>
           <button className="icon-btn" type="button" aria-label="More lecture actions">
-            ...
+            ⋯
           </button>
         </div>
       </div>
+
+      <section className="session-strip" aria-label="Current learning session">
+        <div className="session-pill">
+          <span>현재 구간</span>
+          <strong>{viewModel.player.currentTime}</strong>
+        </div>
+        <div className="session-pill">
+          <span>진행률</span>
+          <strong>{viewModel.player.progressPercent}%</strong>
+        </div>
+        <div className="session-pill priority">
+          <span>AI 판단</span>
+          <strong>{viewModel.segment.concept}</strong>
+        </div>
+        <div className="session-pill">
+          <span>개인정보</span>
+          <strong>집계 신호만</strong>
+        </div>
+      </section>
 
       <section className="lecture-video" aria-label="Lecture player">
         <div className="lecture-video-title">{viewModel.player.title}</div>

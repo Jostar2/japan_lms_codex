@@ -18,6 +18,12 @@ export function InstructorDashboardRoute({ viewModel, onRouteChange }: Instructo
         <p>{viewModel.hero.subtitle}</p>
       </section>
 
+      <section className="dashboard-bridge-strip" aria-label="W7 closed loop bridge">
+        <span>{viewModel.sourceStudentRoute}</span>
+        <strong>{viewModel.decisionId}</strong>
+        <span>{viewModel.targetRoute}</span>
+      </section>
+
       <section className="situation-layer-react" aria-label={viewModel.situation.title}>
         <div className="situation-head">
           <h2>{viewModel.situation.title}</h2>
@@ -76,6 +82,10 @@ function DecisionQueueCard({ decision, onRouteChange }: DecisionQueueCardProps) 
         </div>
         <h3>{decision.title}</h3>
         <p>{decision.subtitle}</p>
+        <div className="decision-route-line">
+          <span>{decision.targetId}</span>
+          <strong>{decision.destinationRoute}</strong>
+        </div>
         <div className="decision-actions">
           <button className="btn btn-instructor" type="button" onClick={() => onRouteChange(decision.destinationRoute)}>
             {decision.primaryAction}
