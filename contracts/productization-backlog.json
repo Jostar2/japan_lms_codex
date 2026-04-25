@@ -102,6 +102,17 @@
       "dependencies": ["instructor.dashboard.view-model"]
     },
     {
+      "id": "instructor.cocreation.view-model",
+      "phase": 3,
+      "surface": "instructor",
+      "kind": "migration",
+      "status": "done",
+      "summary": "Extract Co-Creation Studio closed-loop state from W7 incident input through AB approval and impact bridge.",
+      "gates": ["typecheck", "verify:contracts", "verify:instructor-cocreation-model"],
+      "routeKeys": ["instructor.cocreation", "instructor.classhealth"],
+      "dependencies": ["instructor.dashboard.ui-parity"]
+    },
+    {
       "id": "instructor.cocreation.closed-loop",
       "phase": 3,
       "surface": "instructor",
@@ -110,7 +121,7 @@
       "summary": "Preserve Co-Creation approval and measurement loop for W7/Lec2 material intervention.",
       "gates": ["typecheck", "verify:prototype"],
       "routeKeys": ["instructor.cocreation", "instructor.classhealth"],
-      "dependencies": ["instructor.dashboard.ui-parity"]
+      "dependencies": ["instructor.cocreation.view-model"]
     },
     {
       "id": "shared.api-boundary",

@@ -39,4 +39,5 @@ npm run verify:prototype
 6. Migrate `student.lecture` UI with visual parity. Done: rendered in `app.html` and covered by `verify:app-shell`.
 7. Migrate `instructor.dashboard` view model. Done: `npm run verify:instructor-dashboard-model`.
 8. Migrate `instructor.dashboard` UI with visual parity. Done: rendered in `app.html` and covered by `verify:app-shell`.
-9. Migrate instructor co-creation and measurement flows. Current next unit.
+9. Migrate `instructor.cocreation` view model. Done: `npm run verify:instructor-cocreation-model`.
+10. Render instructor co-creation and measurement flows. Current next unit.

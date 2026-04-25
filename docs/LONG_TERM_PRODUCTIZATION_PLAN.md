@@ -171,7 +171,7 @@ The next implementation track should start with `student.lecture` because it is 
 
 Immediate next units:
 
-1. Extract and render `instructor.cocreation` closed-loop state.
+1. Render the `instructor.cocreation` route in React.
 2. Keep `student.lecture` to `instructor.dashboard` to `instructor.cocreation` contract-backed.
 3. Add visual/smoke checks for the React Co-Creation route.
 4. Then continue to class health measurement.

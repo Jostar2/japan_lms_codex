@@ -11,6 +11,7 @@
     "verify:app-shell": "node scripts/app-shell-smoke.mjs",
     "verify:student-lecture-model": "node scripts/student-lecture-model-audit.mjs",
     "verify:instructor-dashboard-model": "node scripts/instructor-dashboard-model-audit.mjs",
+    "verify:instructor-cocreation-model": "node scripts/instructor-cocreation-model-audit.mjs",
     "verify:routes": "node scripts/route-audit.mjs",
     "verify:interaction": "node scripts/interaction-smoke.mjs",
     "verify:prototype": "node scripts/verify-prototype.mjs",
