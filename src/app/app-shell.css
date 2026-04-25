@@ -1000,6 +1000,311 @@ button {
   font-weight: 800;
 }
 
+.instructor-dashboard-page {
+  min-width: 0;
+}
+
+.dash-hero-react {
+  margin-bottom: 16px;
+  padding: 22px 0 6px;
+}
+
+.dash-hero-react .page-eyebrow {
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.dash-hero-react h1 {
+  max-width: 840px;
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 32px;
+  line-height: 1.14;
+  letter-spacing: 0;
+}
+
+.dash-hero-react p {
+  max-width: 680px;
+  margin: 8px 0 0;
+  color: var(--ink-3);
+  font-size: 14px;
+}
+
+.situation-layer-react {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.situation-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.situation-head h2 {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.situation-row-react {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.situation-item-react {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.situation-dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 999px;
+}
+
+.situation-dot.risk {
+  background: var(--danger);
+}
+
+.situation-dot.focus {
+  background: var(--instructor);
+}
+
+.situation-dot.ok {
+  background: var(--ok);
+}
+
+.situation-label {
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.situation-detail {
+  margin-top: 2px;
+  color: var(--ink-3);
+  font-size: 11.5px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.stat-card {
+  min-width: 0;
+  padding: 15px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.stat-label {
+  color: var(--ink-3);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  margin-top: 5px;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.stat-card.danger .stat-value {
+  color: var(--danger);
+}
+
+.stat-card.warn .stat-value {
+  color: var(--warn);
+}
+
+.stat-sub {
+  margin-top: 6px;
+  color: var(--ink-3);
+  font-size: 11.5px;
+}
+
+.stat-card.up .stat-sub {
+  color: var(--student-ink);
+}
+
+.section-h {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 10px;
+}
+
+.section-h h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.section-h .dash {
+  height: 1px;
+  flex: 1;
+  background: var(--line);
+}
+
+.decision-list {
+  display: grid;
+  gap: 10px;
+}
+
+.decision-card-react {
+  display: grid;
+  grid-template-columns: 4px minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.decision-card-react.high {
+  border-color: var(--instructor-soft);
+}
+
+.decision-marker {
+  background: var(--line-2);
+}
+
+.decision-card-react.high .decision-marker {
+  background: var(--instructor);
+}
+
+.decision-card-react.mid .decision-marker {
+  background: var(--warn);
+}
+
+.decision-card-react.low .decision-marker {
+  background: var(--student);
+}
+
+.decision-content {
+  min-width: 0;
+  padding: 15px 17px;
+}
+
+.decision-topline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+
+.decision-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--instructor-soft);
+  color: var(--instructor-ink);
+  font-size: 10.5px;
+  font-weight: 900;
+}
+
+.decision-meta {
+  color: var(--ink-3);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.decision-card-react h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.28;
+}
+
+.decision-card-react p {
+  margin: 5px 0 0;
+  color: var(--ink-3);
+  font-size: 12.5px;
+}
+
+.decision-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.instructor-dashboard-aside {
+  background: var(--surface-2);
+}
+
+.question-trends-card,
+.schedule-card {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.question-trends-card .card-head {
+  margin-bottom: 10px;
+}
+
+.question-action {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.instructor-sentiment-panel,
+.schedule-card {
+  margin-top: 14px;
+}
+
+.instructor-sentiment-panel .muted {
+  margin-top: 8px;
+  font-size: 11px;
+}
+
+.schedule-list {
+  display: grid;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.schedule-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--ink-2);
+  font-size: 12px;
+}
+
 @media (max-width: 1040px) {
   .claritas-shell {
     grid-template-columns: 220px minmax(0, 1fr);
@@ -1016,5 +1321,10 @@ button {
 
   .lecture-grid {
     grid-template-columns: 1fr;
+  }
+
+  .situation-row-react,
+  .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

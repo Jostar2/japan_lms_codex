@@ -54,12 +54,15 @@ try {
   await page.locator(".view-switch button").filter({ hasText: "교수자" }).click();
   await expectAttribute(page, ".claritas-shell", "data-surface", "instructor", "instructor surface switch");
   await expectCount(page, ".nav-item", 9, "instructor route count");
-  await expectText(page, ".page-head h1", "티칭 홈", "instructor default route");
-  await expectText(page, ".instructor-highlight", "instructor.cocreation", "instructor closed-loop bridge");
-  await expectCount(page, ".field-list li", 8, "XAI required field count");
-  await expectNoA11yViolations(page, "instructor contract app shell");
+  await expectText(page, ".dash-hero-react h1", "박교수님", "instructor dashboard route");
+  await expectCount(page, ".situation-item-react", 3, "instructor situation count");
+  await expectCount(page, ".stat-card", 4, "instructor metric count");
+  await expectCount(page, ".decision-card-react", 3, "instructor decision queue count");
+  await expectText(page, ".decision-card-react.high", "W7/Lec2 자료 개선", "primary instructor decision");
+  await expectText(page, ".question-trends-card", "지니 vs 엔트로피", "instructor question trend");
+  await expectNoA11yViolations(page, "instructor dashboard app shell");
 
-  await page.locator(".nav-item").filter({ hasText: "Co-Creation Studio" }).click();
+  await page.locator(".decision-card-react.high .btn-instructor").click();
   await expectText(page, ".page-head h1", "Co-Creation Studio", "instructor route navigation");
 
   if (pageErrors.length || consoleErrors.length) {

@@ -9,6 +9,10 @@ import {
   type RouteKey,
   type Surface,
 } from "../shared/lms-contract.js";
+import {
+  InstructorDashboardAside,
+  InstructorDashboardRoute,
+} from "../instructor/dashboard/InstructorDashboardRoute.js";
 import { getInstructorDashboardDecisionViewModel } from "../instructor/dashboard/view-model.js";
 import { StudentLectureAside, StudentLectureRoute } from "../student/lecture/StudentLectureRoute.js";
 import { getStudentLectureViewModel } from "../student/lecture/view-model.js";
@@ -25,6 +29,8 @@ export function App() {
   const route = getRouteContract(routeKey);
   const closedLoop = getClosedLoop("w7-gini-entropy-incident");
   const studentLectureViewModel = routeKey === "student.lecture" ? getStudentLectureViewModel() : null;
+  const instructorDashboardViewModel =
+    routeKey === "instructor.dashboard" ? getInstructorDashboardDecisionViewModel() : null;
 
   const tokenCss = useMemo(() => {
     const declarations = flattenDesignTokens().map((token) => `  ${token.cssVariable}: ${token.value};`);
@@ -41,7 +47,13 @@ export function App() {
       <style>{tokenCss}</style>
       <AppShell
         aside={
-          studentLectureViewModel ? <StudentLectureAside viewModel={studentLectureViewModel} /> : <AiContextPanel />
+          studentLectureViewModel ? (
+            <StudentLectureAside viewModel={studentLectureViewModel} />
+          ) : instructorDashboardViewModel ? (
+            <InstructorDashboardAside viewModel={instructorDashboardViewModel} />
+          ) : (
+            <AiContextPanel />
+          )
         }
         routeKey={routeKey}
         routes={routes}
@@ -51,30 +63,13 @@ export function App() {
       >
         {studentLectureViewModel ? (
           <StudentLectureRoute viewModel={studentLectureViewModel} />
+        ) : instructorDashboardViewModel ? (
+          <InstructorDashboardRoute viewModel={instructorDashboardViewModel} onRouteChange={setRouteKey} />
         ) : (
           <RouteContractWorkspace surface={surface} route={route} routeKey={routeKey} closedLoop={closedLoop} />
         )}
       </AppShell>
     </>
-  );
-}
-
-function InstructorDecisionSummary() {
-  const vm = getInstructorDashboardDecisionViewModel();
-
-  return (
-    <section className="work-panel highlighted instructor-highlight" aria-label="Instructor decision">
-      <div className="panel-head">
-        <h2>{vm.title}</h2>
-        <span className="route-key">{vm.decisionId}</span>
-      </div>
-      <p>{vm.recommendedAction}</p>
-      <p className="muted">{vm.evidenceSummary}</p>
-      <div className="bridge-line">
-        <span>{vm.sourceStudentRoute}</span>
-        <strong>{vm.targetRoute}</strong>
-      </div>
-    </section>
   );
 }
 
@@ -118,8 +113,6 @@ function RouteContractWorkspace({ closedLoop, route, routeKey, surface }: RouteC
           </div>
         </dl>
       </section>
-
-      {routeKey === "instructor.dashboard" ? <InstructorDecisionSummary /> : null}
 
       <section className="work-panel" aria-label="Closed loop">
         <div className="panel-head">
