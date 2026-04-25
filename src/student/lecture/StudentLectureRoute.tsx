@@ -45,38 +45,98 @@ export function StudentLectureRoute({ viewModel }: StudentLectureRouteProps) {
         </div>
       </section>
 
-      <section className="lecture-video" aria-label="Lecture player">
-        <div className="lecture-video-title">{viewModel.player.title}</div>
-        <div className="lecture-play-button" aria-hidden="true">
-          ▶
+      <div className="lecture-focus-grid">
+        <div className="lecture-primary-column">
+          <section className="lecture-video" aria-label="Lecture player">
+            <div className="lecture-video-title">{viewModel.player.title}</div>
+            <div className="lecture-play-button" aria-hidden="true">
+              ▶
+            </div>
+            <div className="lecture-controls">
+              <span>{viewModel.player.currentTime}</span>
+              <div className="lecture-progress" aria-label={`${viewModel.player.progressPercent}% watched`}>
+                <div className="lecture-progress-fill" style={{ width: `${viewModel.player.progressPercent}%` }} />
+                {viewModel.player.cues
+                  .filter((cue) => cue.percent > 0 && cue.percent < 100)
+                  .map((cue) => (
+                    <button
+                      aria-label={`${cue.percent}% ${cue.label}`}
+                      className={`lecture-progress-mark ${cue.emphasis === "primary" ? "active" : ""}`}
+                      data-ai-target={cue.targetId}
+                      key={cue.targetId}
+                      style={{ left: `${cue.percent}%` }}
+                      type="button"
+                    />
+                  ))}
+              </div>
+              <span>{viewModel.player.duration}</span>
+            </div>
+          </section>
+
+          <button className="seg-callout" type="button" data-ai-target={viewModel.callout.targetId}>
+            <span className="ai-spark-dot" aria-hidden="true" />
+            <span>{viewModel.callout.label}</span>
+            <span className="spacer" />
+            <span className="tag tag-xai">{viewModel.callout.badge}</span>
+          </button>
         </div>
-        <div className="lecture-controls">
-          <span>{viewModel.player.currentTime}</span>
-          <div className="lecture-progress" aria-label={`${viewModel.player.progressPercent}% watched`}>
-            <div className="lecture-progress-fill" style={{ width: `${viewModel.player.progressPercent}%` }} />
-            {viewModel.player.cues
-              .filter((cue) => cue.percent > 0 && cue.percent < 100)
-              .map((cue) => (
-                <button
-                  aria-label={`${cue.percent}% ${cue.label}`}
-                  className={`lecture-progress-mark ${cue.emphasis === "primary" ? "active" : ""}`}
-                  data-ai-target={cue.targetId}
-                  key={cue.targetId}
-                  style={{ left: `${cue.percent}%` }}
-                  type="button"
-                />
-              ))}
+
+        <section className="learning-plan-panel" aria-label="Recommended recovery path">
+          <div className="card-head">
+            <div>
+              <div className="card-title">추천 학습 경로</div>
+              <div className="card-sub">막힌 구간을 회복한 뒤 강의로 돌아갑니다.</div>
+            </div>
+            <span className="tag">5분</span>
           </div>
-          <span>{viewModel.player.duration}</span>
+          <ol className="learning-step-list">
+            <li>
+              <span>1</span>
+              <div>
+                <strong>정의 카드 확인</strong>
+                <small>{viewModel.guidance.recommendedAction}</small>
+              </div>
+            </li>
+            <li>
+              <span>2</span>
+              <div>
+                <strong>확인 문제 2개</strong>
+                <small>정답률과 자신감을 함께 기록합니다.</small>
+              </div>
+            </li>
+            <li>
+              <span>3</span>
+              <div>
+                <strong>18:12로 복귀</strong>
+                <small>추천 결과는 개인 학습에만 사용합니다.</small>
+              </div>
+            </li>
+          </ol>
+          <div className="learning-plan-actions">
+            <button className="btn btn-student" type="button" data-ai-target="quick-review-5min">
+              회복 경로 시작
+            </button>
+            <button className="btn btn-ghost" type="button" data-ai-target="prereq-entropy">
+              근거 확인
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <section className="lecture-resource-strip" aria-label="Lecture learning resources">
+        <div>
+          <span>교재</span>
+          <strong>§4.2 의사결정 트리</strong>
+        </div>
+        <div>
+          <span>자막</span>
+          <strong>한 · EN · 日 · 中</strong>
+        </div>
+        <div>
+          <span>과제 연결</span>
+          <strong>과제 3 실험 설계</strong>
         </div>
       </section>
-
-      <button className="seg-callout" type="button" data-ai-target={viewModel.callout.targetId}>
-        <span className="ai-spark-dot" aria-hidden="true" />
-        <span>{viewModel.callout.label}</span>
-        <span className="spacer" />
-        <span className="tag tag-xai">{viewModel.callout.badge}</span>
-      </button>
 
       <div className="lecture-grid">
         <section className="lecture-card" aria-label="Lecture summary">

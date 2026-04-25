@@ -24,23 +24,59 @@ export function InstructorDashboardRoute({ viewModel, onRouteChange }: Instructo
         <span>Co-Creation Studio</span>
       </section>
 
-      <section className="situation-layer-react" aria-label={viewModel.situation.title}>
-        <div className="situation-head">
-          <h2>{viewModel.situation.title}</h2>
-          <span className="muted">{viewModel.situation.subtitle}</span>
+      <section className="dashboard-command-bar" aria-label="Instructor operating controls">
+        <div>
+          <span>자동 실행</span>
+          <strong>0건</strong>
         </div>
-        <div className="situation-row-react">
-          {viewModel.situation.items.map((item) => (
-            <div className="situation-item-react" key={item.label}>
-              <span className={`situation-dot ${item.tone}`} aria-hidden="true" />
-              <div>
-                <div className="situation-label">{item.label}</div>
-                <div className="situation-detail">{item.detail}</div>
-              </div>
-            </div>
-          ))}
+        <div>
+          <span>승인 대기</span>
+          <strong>3건</strong>
         </div>
+        <div>
+          <span>데이터 범위</span>
+          <strong>익명 집계</strong>
+        </div>
+        <button className="btn btn-ghost" type="button">
+          운영 로그
+        </button>
       </section>
+
+      <div className="dashboard-overview-grid">
+        <section className="situation-layer-react" aria-label={viewModel.situation.title}>
+          <div className="situation-head">
+            <h2>{viewModel.situation.title}</h2>
+            <span className="muted">{viewModel.situation.subtitle}</span>
+          </div>
+          <div className="situation-row-react">
+            {viewModel.situation.items.map((item) => (
+              <div className="situation-item-react" key={item.label}>
+                <span className={`situation-dot ${item.tone}`} aria-hidden="true" />
+                <div>
+                  <div className="situation-label">{item.label}</div>
+                  <div className="situation-detail">{item.detail}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="dashboard-governance-panel" aria-label="AI governance status">
+          <div className="card-title">AI 운영 원칙</div>
+          <div className="governance-row">
+            <span>권장</span>
+            <strong>교수자 승인 전까지 보류</strong>
+          </div>
+          <div className="governance-row">
+            <span>근거</span>
+            <strong>집계 신호 · 루브릭 · 일정</strong>
+          </div>
+          <div className="governance-row">
+            <span>측정</span>
+            <strong>효과와 guardrail 동시 기록</strong>
+          </div>
+        </section>
+      </div>
 
       <section className="stat-grid" aria-label="Instructor operating metrics">
         {viewModel.stats.map((stat) => (
@@ -54,6 +90,8 @@ export function InstructorDashboardRoute({ viewModel, onRouteChange }: Instructo
 
       <div className="section-h">
         <h2>오늘의 결정</h2>
+        <span className="decision-filter-chip">영향도순</span>
+        <span className="decision-filter-chip">승인 필요</span>
         <div className="dash" />
       </div>
 
@@ -86,6 +124,14 @@ function DecisionQueueCard({ decision, onRouteChange }: DecisionQueueCardProps) 
           <span>다음 작업</span>
           <strong>{destinationRouteLabels[decision.destinationRoute]}</strong>
         </div>
+        <div className="decision-proof-grid" aria-label={`${decision.title} decision evidence`}>
+          {decisionProofs[decision.targetId].map((proof) => (
+            <div key={proof.label}>
+              <span>{proof.label}</span>
+              <strong>{proof.value}</strong>
+            </div>
+          ))}
+        </div>
         <div className="decision-actions">
           <button className="btn btn-instructor" type="button" onClick={() => onRouteChange(decision.destinationRoute)}>
             {decision.primaryAction}
@@ -103,6 +149,34 @@ const destinationRouteLabels: Record<InstructorDecisionCard["destinationRoute"],
   "instructor.cocreation": "Co-Creation Studio",
   "instructor.grading": "AI 평가 지원",
   "instructor.intervention": "학습 개입",
+};
+
+const decisionProofs: Record<InstructorDecisionCard["targetId"], Array<{ label: string; value: string }>> = {
+  "decision-w7-cocreation": [
+    { label: "근거", value: "정지/반복 42%" },
+    { label: "불확실성", value: "신뢰도 0.78" },
+    { label: "측정", value: "재시청률 · 정답률" },
+  ],
+  "decision-grading-uncertain-8": [
+    { label: "근거", value: "루브릭 경계" },
+    { label: "불확실성", value: "8건 보류" },
+    { label: "측정", value: "재검토 일치율" },
+  ],
+  "decision-intervention-6": [
+    { label: "근거", value: "3주 미접속" },
+    { label: "불확실성", value: "사유 단정 없음" },
+    { label: "측정", value: "7일 후 반응" },
+  ],
+  "question-trend-gini": [
+    { label: "근거", value: "질문 42건" },
+    { label: "불확실성", value: "표현 다양" },
+    { label: "측정", value: "중복 질문률" },
+  ],
+  "cohort-pattern-w7": [
+    { label: "근거", value: "수강생 128명" },
+    { label: "불확실성", value: "익명 집계" },
+    { label: "측정", value: "회복률" },
+  ],
 };
 
 interface InstructorDashboardAsideProps {

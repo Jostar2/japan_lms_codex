@@ -5,11 +5,18 @@
 ## Migrated Surface
 
 - Hero for three pending decisions.
+- Operating command bar that makes auto-execution, pending approvals, and data scope visible before any action.
 - Situation layer with risk, grading, and rubric readiness signals.
+- AI governance panel for approval, evidence, and measurement rules.
 - Four operating stats.
 - Decision queue with W7 Co-Creation, grading uncertainty, and intervention review.
+- Per-decision proof grid covering evidence, uncertainty, and measurement target.
 - Right-side question trend card, sentiment signal, and schedule.
 - Primary action from `decision-w7-cocreation` to `instructor.cocreation`.
+
+## Product Standard
+
+The instructor dashboard is an approval and measurement surface, not a generic analytics dashboard. AI recommendations must expose evidence quality, uncertainty, human approval state, and measurement intent in the decision card itself.
 
 ## Verification
 
