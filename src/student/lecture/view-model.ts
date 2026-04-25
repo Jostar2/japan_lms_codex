@@ -273,8 +273,8 @@ export function getStudentLectureViewModel(): StudentLectureViewModel {
     instructorBridge: {
       routeKey: "instructor.dashboard",
       targetId: "decision-w7-cocreation",
-      label: "반 단위 신호 · 같은 incident",
-      body: "이 22% 막힘은 반 전체에서 일어났습니다. 교수자 화면에서 같은 incident를 집계로 보면 자료 개선 결정으로 연결됩니다.",
+      label: "반 단위 신호 · 같은 학습 패턴",
+      body: "이 22% 막힘은 반 전체에서 일어났습니다. 교수자 화면에서는 같은 패턴을 집계로 보고 자료 개선 결정으로 연결합니다.",
       privacyCopy: "집계 신호 · 개인 식별 없음",
     },
   };

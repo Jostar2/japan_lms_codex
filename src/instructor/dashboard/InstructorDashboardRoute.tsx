@@ -19,9 +19,9 @@ export function InstructorDashboardRoute({ viewModel, onRouteChange }: Instructo
       </section>
 
       <section className="dashboard-bridge-strip" aria-label="W7 closed loop bridge">
-        <span>{viewModel.sourceStudentRoute}</span>
-        <strong>{viewModel.decisionId}</strong>
-        <span>{viewModel.targetRoute}</span>
+        <span>학습자 강의 막힘</span>
+        <strong>W7 자료 개선 결정</strong>
+        <span>Co-Creation Studio</span>
       </section>
 
       <section className="situation-layer-react" aria-label={viewModel.situation.title}>
@@ -83,8 +83,8 @@ function DecisionQueueCard({ decision, onRouteChange }: DecisionQueueCardProps) 
         <h3>{decision.title}</h3>
         <p>{decision.subtitle}</p>
         <div className="decision-route-line">
-          <span>{decision.targetId}</span>
-          <strong>{decision.destinationRoute}</strong>
+          <span>다음 작업</span>
+          <strong>{destinationRouteLabels[decision.destinationRoute]}</strong>
         </div>
         <div className="decision-actions">
           <button className="btn btn-instructor" type="button" onClick={() => onRouteChange(decision.destinationRoute)}>
@@ -98,6 +98,12 @@ function DecisionQueueCard({ decision, onRouteChange }: DecisionQueueCardProps) 
     </article>
   );
 }
+
+const destinationRouteLabels: Record<InstructorDecisionCard["destinationRoute"], string> = {
+  "instructor.cocreation": "Co-Creation Studio",
+  "instructor.grading": "AI 평가 지원",
+  "instructor.intervention": "학습 개입",
+};
 
 interface InstructorDashboardAsideProps {
   viewModel: InstructorDashboardDecisionViewModel;

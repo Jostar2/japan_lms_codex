@@ -48,7 +48,7 @@ function Topbar({ surface, onSurfaceChange }: TopbarProps) {
 
       <form className="search-bar" role="search" aria-label="LMS search" onSubmit={(event) => event.preventDefault()}>
         <span className="search-kicker" aria-hidden="true">
-          Search
+          검색
         </span>
         <input aria-label="강의, 주제, 학생, 과제 검색" placeholder="강의·주제·학생·과제 검색" type="search" />
       </form>
@@ -111,7 +111,7 @@ function LeftNav({ routeKey, routes, surface, onRouteChange }: LeftNavProps) {
               >
                 <span>
                   <span className="nav-label">{item.label}</span>
-                  <span className="nav-group">{item.entities.slice(0, 2).join(" · ")}</span>
+                  <span className="nav-group">{navRouteSubtitles[item.key]}</span>
                 </span>
               </button>
             ))}
@@ -121,6 +121,26 @@ function LeftNav({ routeKey, routes, surface, onRouteChange }: LeftNavProps) {
     </nav>
   );
 }
+
+const navRouteSubtitles: Record<RouteKey, string> = {
+  "student.dashboard": "수강 현황과 다음 행동",
+  "student.today": "오늘 할 학습 정렬",
+  "student.explore": "강의와 개념 탐색",
+  "student.lecture": "영상 · 자막 · 복습",
+  "student.assignment": "제출 · 토론 · 루브릭",
+  "student.feedback": "채점 결과와 개선점",
+  "student.companion": "출처 기반 AI 질문",
+  "student.insight-me": "개인 학습 패턴",
+  "instructor.dashboard": "결정 큐와 운영 신호",
+  "instructor.today": "오늘 승인할 작업",
+  "instructor.design": "강의 목표와 자료",
+  "instructor.rubric": "평가 기준 설계",
+  "instructor.cocreation": "자료 개선안 생성",
+  "instructor.grading": "채점 초안 검토",
+  "instructor.classhealth": "반 단위 효과 측정",
+  "instructor.intervention": "지원 메시지 승인",
+  "instructor.insights": "학기 리포트",
+};
 
 function groupRoutes(routes: SurfaceRoute[]): Array<{ label: string; items: SurfaceRoute[] }> {
   const grouped = new Map<string, SurfaceRoute[]>();

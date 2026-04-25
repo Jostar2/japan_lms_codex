@@ -92,8 +92,8 @@ export function getInstructorDashboardDecisionViewModel(): InstructorDashboardDe
     targetRoute: "instructor.cocreation",
     hero: {
       eyebrow: "오늘의 결정 3건 · 2026 봄학기 · 8주차 수요일",
-      title: "박교수님, 세 가지 결정이 기다리고 있어요.",
-      subtitle: "모든 제안에는 근거 · 대안 · 무시하기 선택지가 있습니다.",
+      title: "오늘 처리할 결정 3건",
+      subtitle: "근거, 대안, 예상 효과를 확인한 뒤 승인합니다.",
     },
     situation: {
       title: "오늘의 상황",

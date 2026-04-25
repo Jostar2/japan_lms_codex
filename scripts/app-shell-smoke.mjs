@@ -54,7 +54,7 @@ try {
   await page.locator(".view-switch button").filter({ hasText: "교수자" }).click();
   await expectAttribute(page, ".claritas-shell", "data-surface", "instructor", "instructor surface switch");
   await expectCount(page, ".nav-item", 9, "instructor route count");
-  await expectText(page, ".dash-hero-react h1", "박교수님", "instructor dashboard route");
+  await expectText(page, ".dash-hero-react h1", "오늘 처리할 결정", "instructor dashboard route");
   await expectCount(page, ".situation-item-react", 3, "instructor situation count");
   await expectCount(page, ".stat-card", 4, "instructor metric count");
   await expectCount(page, ".decision-card-react", 3, "instructor decision queue count");
