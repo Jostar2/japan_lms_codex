@@ -20,11 +20,6 @@ import {
   InstructorCocreationRoute,
 } from "../instructor/cocreation/InstructorCocreationRoute.js";
 import { getInstructorCocreationViewModel } from "../instructor/cocreation/view-model.js";
-import {
-  InstructorClassHealthAside,
-  InstructorClassHealthRoute,
-} from "../instructor/classhealth/InstructorClassHealthRoute.js";
-import { getInstructorClassHealthViewModel } from "../instructor/classhealth/view-model.js";
 import { StudentLectureAside, StudentLectureRoute } from "../student/lecture/StudentLectureRoute.js";
 import { getStudentLectureViewModel } from "../student/lecture/view-model.js";
 
@@ -54,8 +49,6 @@ export function App() {
     routeKey === "instructor.dashboard" ? getInstructorDashboardDecisionViewModel() : null;
   const instructorCocreationViewModel =
     routeKey === "instructor.cocreation" ? getInstructorCocreationViewModel() : null;
-  const instructorClassHealthViewModel =
-    routeKey === "instructor.classhealth" ? getInstructorClassHealthViewModel() : null;
 
   const tokenCss = useMemo(() => {
     const declarations = flattenDesignTokens().map((token) => `  ${token.cssVariable}: ${token.value};`);
@@ -87,8 +80,6 @@ export function App() {
             <InstructorDashboardAside activeAiTarget={activeAiTarget} viewModel={instructorDashboardViewModel} />
           ) : instructorCocreationViewModel ? (
             <InstructorCocreationAside activeAiTarget={activeAiTarget} viewModel={instructorCocreationViewModel} />
-          ) : instructorClassHealthViewModel ? (
-            <InstructorClassHealthAside activeAiTarget={activeAiTarget} viewModel={instructorClassHealthViewModel} />
           ) : (
             <AiContextPanel closedLoop={closedLoop} route={route} surface={surface} />
           )
@@ -106,8 +97,6 @@ export function App() {
           <InstructorDashboardRoute viewModel={instructorDashboardViewModel} onRouteChange={navigateRoute} />
         ) : instructorCocreationViewModel ? (
           <InstructorCocreationRoute viewModel={instructorCocreationViewModel} onRouteChange={navigateRoute} />
-        ) : instructorClassHealthViewModel ? (
-          <InstructorClassHealthRoute viewModel={instructorClassHealthViewModel} onRouteChange={navigateRoute} />
         ) : (
           <RouteWorkspace
             closedLoop={closedLoop}

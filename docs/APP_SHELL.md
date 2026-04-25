@@ -11,7 +11,6 @@
 - `src/app/AiContextPanel.tsx` renders route-aware evidence and privacy boundaries from `contracts/university-lms.contract.json`.
 - `src/app/app-shell.css` uses design tokens extracted from the prototype instead of introducing a new palette.
 - `src/instructor/cocreation/InstructorCocreationRoute.tsx` renders the first bespoke AI co-authoring workbench for professor-side material improvement and measurement.
-- `src/instructor/classhealth/InstructorClassHealthRoute.tsx` renders the cohort-level effect ledger, support actions, policy handoff, and purpose-gated student access route.
 
 ## AI Interaction Rule
 
@@ -27,7 +26,7 @@ npm run verify:app-shell
 
 The smoke check starts Vite, opens `app.html`, verifies the default learner route, switches to the instructor surface, checks the 8/9 route split, and confirms the shared W7 closed-loop bridge remains visible.
 
-It also navigates from `instructor.dashboard` into `instructor.cocreation`, verifies AI context switching across input, variant, and rationale controls, follows the effect bridge into `instructor.classhealth`, and checks Class Health AI context switching before running axe.
+It also navigates from `instructor.dashboard` into `instructor.cocreation`, verifies AI context switching across input, variant, and rationale controls, and follows the effect bridge into `instructor.classhealth`.
 
 The full gate is still:
 

@@ -13,7 +13,6 @@ const commands = [
   [npmCommand, ["run", "verify:student-lecture-model"]],
   [npmCommand, ["run", "verify:instructor-dashboard-model"]],
   [npmCommand, ["run", "verify:instructor-cocreation-model"]],
-  [npmCommand, ["run", "verify:instructor-classhealth-model"]],
   [npmCommand, ["run", "verify:app-shell"]],
   [npmCommand, ["run", "verify:routes"]],
   [npmCommand, ["run", "verify:interaction"]],

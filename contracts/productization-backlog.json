@@ -117,22 +117,11 @@
       "phase": 3,
       "surface": "instructor",
       "kind": "migration",
-      "status": "done",
+      "status": "next",
       "summary": "Preserve Co-Creation approval and measurement loop for W7/Lec2 material intervention.",
       "gates": ["typecheck", "verify:prototype"],
       "routeKeys": ["instructor.cocreation", "instructor.classhealth"],
       "dependencies": ["instructor.cocreation.view-model"]
-    },
-    {
-      "id": "instructor.classhealth.closed-loop",
-      "phase": 3,
-      "surface": "instructor",
-      "kind": "migration",
-      "status": "done",
-      "summary": "Render Class Health as the cohort-level impact ledger and policy handoff route for the W7/Lec2 intervention.",
-      "gates": ["typecheck", "verify:instructor-classhealth-model", "verify:prototype"],
-      "routeKeys": ["instructor.classhealth"],
-      "dependencies": ["instructor.cocreation.closed-loop"]
     },
     {
       "id": "shared.api-boundary",
