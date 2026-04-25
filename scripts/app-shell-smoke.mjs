@@ -1,0 +1,111 @@
+#!/usr/bin/env node
+
+import process from "node:process";
+import { AxeBuilder } from "@axe-core/playwright";
+import { chromium } from "playwright";
+import { createServer } from "vite";
+
+const server = await createServer({
+  configFile: "vite.config.mjs",
+  logLevel: "error",
+  server: {
+    host: "127.0.0.1",
+    port: 4173,
+    strictPort: false,
+    open: false,
+  },
+});
+
+let browser;
+let context;
+const pageErrors = [];
+const consoleErrors = [];
+
+try {
+  await server.listen();
+  const baseUrl =
+    server.resolvedUrls?.local?.find((url) => url.includes("127.0.0.1")) ?? server.resolvedUrls?.local?.[0];
+
+  if (!baseUrl) {
+    throw new Error("Vite did not expose a local URL for app shell smoke testing.");
+  }
+
+  browser = await chromium.launch();
+  context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") consoleErrors.push(message.text());
+  });
+
+  await page.goto(new URL("app.html", baseUrl).href, { waitUntil: "domcontentloaded" });
+  await page.waitForSelector(".claritas-shell");
+
+  await expectAttribute(page, ".claritas-shell", "data-surface", "student", "default surface");
+  await expectCount(page, ".nav-item", 8, "student route count");
+  await expectText(page, ".page-head h1", "의사결정 트리", "student lecture route");
+  await expectText(page, ".lecture-video", "Lec 2", "student lecture player");
+  await expectText(page, ".seg-callout", "동료 정지/반복 42%", "student struggle callout");
+  await expectText(page, ".cohort-bridge", "교수자 집계", "student-to-instructor bridge");
+  await expectCount(page, ".summary-bullet", 5, "student summary bullet count");
+  await expectCount(page, ".transcript-row", 4, "student transcript row count");
+  await expectNoA11yViolations(page, "student lecture app shell");
+
+  await page.locator(".view-switch button").filter({ hasText: "교수자" }).click();
+  await expectAttribute(page, ".claritas-shell", "data-surface", "instructor", "instructor surface switch");
+  await expectCount(page, ".nav-item", 9, "instructor route count");
+  await expectText(page, ".page-head h1", "티칭 홈", "instructor default route");
+  await expectText(page, ".instructor-highlight", "instructor.cocreation", "instructor closed-loop bridge");
+  await expectCount(page, ".field-list li", 8, "XAI required field count");
+  await expectNoA11yViolations(page, "instructor contract app shell");
+
+  await page.locator(".nav-item").filter({ hasText: "Co-Creation Studio" }).click();
+  await expectText(page, ".page-head h1", "Co-Creation Studio", "instructor route navigation");
+
+  if (pageErrors.length || consoleErrors.length) {
+    for (const error of pageErrors) console.error(`pageerror: ${error}`);
+    for (const error of consoleErrors) console.error(`console error: ${error}`);
+    process.exit(1);
+  }
+
+  console.log("App shell smoke checks passed.");
+} finally {
+  if (context) {
+    await context.close();
+  }
+  if (browser) {
+    await browser.close();
+  }
+  await server.close();
+}
+
+async function expectText(page, selector, expectedText, label) {
+  const text = await page.locator(selector).first().textContent();
+  if (text?.includes(expectedText)) return;
+
+  throw new Error(`${label} failed: expected ${selector} to include "${expectedText}", got "${text ?? ""}".`);
+}
+
+async function expectAttribute(page, selector, name, expectedValue, label) {
+  const actualValue = await page.locator(selector).first().getAttribute(name);
+  if (actualValue === expectedValue) return;
+
+  throw new Error(`${label} failed: expected ${selector}[${name}] to be "${expectedValue}", got "${actualValue}".`);
+}
+
+async function expectCount(page, selector, expectedCount, label) {
+  const actualCount = await page.locator(selector).count();
+  if (actualCount === expectedCount) return;
+
+  throw new Error(`${label} failed: expected ${expectedCount} matches for ${selector}, got ${actualCount}.`);
+}
+
+async function expectNoA11yViolations(page, label) {
+  const results = await new AxeBuilder({ page }).analyze();
+  if (!results.violations.length) return;
+
+  const details = results.violations
+    .map((violation) => `${violation.id}: ${violation.nodes.map((node) => node.target.join(" ")).join(", ")}`)
+    .join("; ");
+  throw new Error(`${label} accessibility failed: ${details}`);
+}

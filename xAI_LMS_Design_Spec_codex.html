@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claritas · 설계 사양서 (Design Specification)</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-jp.css" />
+<style>
+:root{
+  --bg:#faf9f5;--surface:#fff;--surface-2:#f4f2ec;--surface-3:#eceae1;
+  --ink:#1f1e1c;--ink-2:#3d3c38;--ink-3:#6e6c66;--ink-4:#a8a59d;
+  --line:#e6e3d9;--line-2:#dcd8ca;
+  --claude:#c15f3c;--claude-soft:#f3e0d5;--claude-ink:#7a3620;
+  --student:#2f7a5a;--student-soft:#dff0e7;--student-ink:#164d36;
+  --instructor:#4a3fa8;--instructor-soft:#e7e4f6;--instructor-ink:#2a2370;
+  --danger:#b4452c;--danger-soft:#f8e1d8;
+  --warn:#a66a12;--warn-soft:#fae8cc;
+  --ok:#2f7a5a;--ok-soft:#dff0e7;
+  --xai:#6d4dbd;--xai-soft:#ece6f9;
+  --font-serif:"Pretendard JP Variable","Pretendard JP","Pretendard","Apple SD Gothic Neo",sans-serif;
+  --font-sans:"Pretendard JP Variable","Pretendard JP","Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.65;font-size:14px;padding:48px 56px 120px;min-width:1200px;letter-spacing:-.005em}
+
+/* ── masthead ── */
+.mast{display:flex;gap:28px;padding-bottom:36px;border-bottom:1px solid var(--line);margin-bottom:40px;align-items:flex-end}
+.mast-left{flex:1}
+.mast-eyebrow{font-size:11.5px;color:var(--ink-4);letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.brand-mark{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#e8b997,#c15f3c 70%);display:grid;place-items:center;color:#fff;font-family:var(--font-serif);font-weight:700;font-size:13px}
+.mast-title{font-family:var(--font-serif);font-weight:800;font-size:44px;letter-spacing:-.035em;line-height:1.1;margin-bottom:16px;color:var(--ink)}
+.mast-title em{font-style:normal;color:var(--claude);font-weight:700}
+.mast-sub{font-size:15px;color:var(--ink-3);max-width:720px;line-height:1.65}
+.mast-meta{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--ink-3);text-align:right;min-width:260px}
+.mast-meta strong{color:var(--ink)}
+.mast-meta .row{display:flex;justify-content:space-between;gap:14px}
+
+/* ── TOC ── */
+.toc{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:48px}
+.toc a{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border:1px solid var(--line);background:var(--surface);border-radius:12px;color:var(--ink-2);text-decoration:none;transition:.15s}
+.toc a:hover{border-color:var(--claude);box-shadow:0 4px 12px rgba(20,18,14,.06)}
+.toc a .num{font-family:var(--font-serif);font-size:13px;color:var(--claude);font-weight:500}
+.toc a .lbl{font-weight:600;font-size:13.5px}
+.toc a .sub{font-size:11.5px;color:var(--ink-3)}
+
+/* ── sections ── */
+section{margin-bottom:64px;scroll-margin-top:20px}
+.section-h{display:flex;align-items:flex-end;gap:18px;margin-bottom:22px;padding-bottom:14px;border-bottom:1px dashed var(--line-2)}
+.section-num{font-family:var(--font-serif);font-size:14px;color:var(--claude);letter-spacing:.04em;font-weight:500;min-width:40px}
+.section-title{font-family:var(--font-serif);font-weight:700;font-size:26px;letter-spacing:-.03em;line-height:1.2}
+.section-title em{font-style:normal;color:var(--claude);font-weight:700}
+.section-kicker{font-size:12px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.section-lead{font-size:14.5px;color:var(--ink-3);max-width:780px;line-height:1.7;margin-bottom:24px}
+
+/* ── callout ── */
+.callout{padding:18px 22px;background:var(--claude-soft);border-left:3px solid var(--claude);border-radius:10px;margin:18px 0}
+.callout strong{color:var(--claude-ink)}
+.callout.xai{background:var(--xai-soft);border-left-color:var(--xai)}
+.callout.xai strong{color:var(--xai)}
+
+/* ── cards ── */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+.card-h{font-family:var(--font-serif);font-weight:700;font-size:18px;letter-spacing:-.01em;margin-bottom:10px}
+.card-sub{font-size:12.5px;color:var(--ink-3);margin-bottom:14px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stack{display:flex;flex-direction:column;gap:16px}
+
+/* ── tables ── */
+table.spec{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;margin-top:10px}
+table.spec th{background:var(--surface-2);color:var(--ink-2);padding:10px 12px;text-align:left;font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--line)}
+table.spec td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
+table.spec tr:last-child td{border-bottom:0}
+table.spec td .before{color:var(--ink-3);font-size:12px}
+table.spec td .after{color:var(--ink);font-weight:500;margin-top:2px}
+
+/* ── tags ── */
+.tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:500;background:var(--surface-2);color:var(--ink-3)}
+.tag-claude{background:var(--claude-soft);color:var(--claude-ink)}
+.tag-student{background:var(--student-soft);color:var(--student-ink)}
+.tag-instructor{background:var(--instructor-soft);color:var(--instructor-ink)}
+.tag-xai{background:var(--xai-soft);color:var(--xai)}
+.tag-new{background:#d9f0e5;color:#0f5136}
+.tag-line{background:transparent;border:1px solid var(--line-2);color:var(--ink-3)}
+
+/* ── wireframe mock ── */
+.wire{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:0 4px 14px rgba(20,18,14,.04)}
+.wire-head{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--surface-2);font-size:11.5px;color:var(--ink-3)}
+.wire-head .dot{width:9px;height:9px;border-radius:50%;background:var(--line-2)}
+.wire-body{padding:18px}
+
+/* ── xai panel mock ── */
+.xai-box{background:linear-gradient(180deg,rgba(236,230,249,.6),rgba(236,230,249,.15));border:1px solid #d9cef0;border-radius:10px;padding:14px 16px}
+.xai-head{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;color:var(--xai);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.xai-head .spark{width:18px;height:18px;border-radius:5px;background:var(--xai);color:#fff;display:grid;place-items:center;font-size:11px}
+.xai-body{font-size:12.5px;color:var(--ink-2);line-height:1.65}
+.xai-body strong{color:var(--ink)}
+.conf{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11.5px;color:var(--ink-3)}
+.conf-bar{flex:1;height:5px;background:#fff;border-radius:3px;overflow:hidden;border:1px solid #d9cef0}
+.conf-bar-fill{height:100%;background:var(--xai)}
+.conf-val{font-weight:600;color:var(--xai);font-variant-numeric:tabular-nums}
+
+/* ── principle ── */
+.princ{padding:18px 20px;background:var(--surface);border:1px solid var(--line);border-radius:12px;position:relative}
+.princ-num{font-family:var(--font-serif);font-size:36px;color:var(--claude);line-height:1;margin-bottom:10px;font-weight:500}
+.princ-title{font-family:var(--font-serif);font-size:17px;font-weight:500;letter-spacing:-.01em;margin-bottom:6px}
+.princ-body{font-size:12.5px;color:var(--ink-3);line-height:1.65}
+
+/* ── persona strip ── */
+.persona-strip{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:20px 0 28px}
+.persona{padding:20px 22px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.persona.s{border-top:4px solid var(--student)}
+.persona.i{border-top:4px solid var(--instructor)}
+.persona .ptag{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);margin-bottom:4px}
+.persona h3{font-family:var(--font-serif);font-size:20px;font-weight:500;margin-bottom:4px}
+.persona .role{font-size:13px;color:var(--ink-3);margin-bottom:14px}
+.persona .pain{font-size:12.5px;color:var(--ink-2);margin:12px 0;padding:10px 12px;background:var(--surface-2);border-radius:8px;border-left:3px solid var(--danger)}
+.persona .pain strong{color:var(--danger)}
+.persona .gain{font-size:12.5px;color:var(--ink-2);padding:10px 12px;background:var(--ok-soft);border-radius:8px;border-left:3px solid var(--ok)}
+.persona .gain strong{color:var(--ok)}
+
+/* ── color chip ── */
+.chip-color{display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.chip-sw{width:32px;height:32px;border-radius:8px;flex-shrink:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.chip-info .chip-name{font-size:12.5px;font-weight:600}
+.chip-info .chip-var{font-size:11px;color:var(--ink-3);font-family:ui-monospace,Menlo,monospace;margin-top:2px}
+
+/* ── type sample ── */
+.type-sample{padding:22px 24px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.type-spec{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--ink-3);margin-top:8px}
+
+/* ── pattern grid ── */
+.pattern-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;height:100%}
+.pattern-card h4{font-family:var(--font-serif);font-size:15px;font-weight:500;margin-bottom:6px}
+.pattern-card p{font-size:12.5px;color:var(--ink-3);line-height:1.65}
+.pattern-card .when{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:11.5px;color:var(--ink-3)}
+.pattern-card .when strong{color:var(--ink-2)}
+
+/* ── screen card ── */
+.screen{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.screen-head{display:grid;grid-template-columns:1fr auto;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--surface-2) 0%,var(--surface) 100%)}
+.screen-head .eyebrow{font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:4px}
+.screen-head h3{font-family:var(--font-serif);font-size:20px;font-weight:500;letter-spacing:-.01em;line-height:1.25}
+.screen-head h3 em{font-style:normal;color:var(--claude);font-weight:700}
+.screen-head .tags{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.screen-body{padding:20px 24px}
+.screen-layout{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:flex-start}
+
+/* ── flow diagram ── */
+.flow{display:flex;align-items:center;gap:0;margin:24px 0;flex-wrap:wrap}
+.flow-node{padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:12px;font-weight:500}
+.flow-node.ai{background:var(--xai-soft);border-color:#d9cef0;color:var(--xai)}
+.flow-node.human{background:var(--claude-soft);border-color:#efd0bd;color:var(--claude-ink)}
+.flow-arrow{color:var(--ink-4);padding:0 6px;font-size:14px}
+
+/* ── before/after ── */
+.ba-row{display:grid;grid-template-columns:1fr 36px 1fr;gap:16px;align-items:stretch;margin-top:10px}
+.ba-card{padding:14px 16px;border-radius:10px;font-size:12.5px;line-height:1.65}
+.ba-before{background:#f5f2ea;color:var(--ink-3);border:1px dashed var(--line-2)}
+.ba-before .lbl{font-size:10.5px;font-weight:600;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.ba-after{background:var(--surface);border:1px solid var(--claude);box-shadow:0 2px 8px rgba(193,95,60,.08)}
+.ba-after .lbl{font-size:10.5px;font-weight:600;color:var(--claude);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.ba-after strong{color:var(--ink)}
+.ba-arrow{display:grid;place-items:center;color:var(--claude);font-size:22px;font-family:var(--font-serif)}
+
+/* ── metric ── */
+.metric{padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-radius:12px;text-align:left}
+.metric-lbl{font-size:11.5px;color:var(--ink-3);font-weight:500;margin-bottom:4px}
+.metric-val{font-family:var(--font-serif);font-size:30px;font-weight:500;letter-spacing:-.015em}
+.metric-val em{font-style:normal;color:var(--claude);font-weight:700;font-size:18px;margin-left:4px}
+.metric-sub{font-size:11.5px;color:var(--ink-3);margin-top:4px}
+
+/* ── roadmap ── */
+.roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px}
+.rm{padding:18px;background:var(--surface);border:1px solid var(--line);border-radius:12px;position:relative}
+.rm-phase{font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:6px}
+.rm-title{font-family:var(--font-serif);font-size:16px;font-weight:500;margin-bottom:8px}
+.rm ul{list-style:none;font-size:12.5px;color:var(--ink-2)}
+.rm ul li{padding:4px 0;border-bottom:1px dashed var(--line)}
+.rm ul li:last-child{border-bottom:0}
+.rm ul li::before{content:"·";color:var(--claude);margin-right:6px}
+
+/* ── panel-mock (wireframe visualization) ── */
+.panel-mock{display:grid;grid-template-columns:80px 1fr 100px;gap:6px;background:var(--surface-2);padding:10px;border-radius:10px;min-height:200px}
+.pm{background:var(--surface);border-radius:6px;padding:8px 10px;font-size:11px;color:var(--ink-3);display:flex;flex-direction:column;gap:4px}
+.pm.nav{background:#fff}
+.pm.main{background:#fff}
+.pm.aside{background:var(--xai-soft);border:1px dashed var(--xai)}
+.pm-label{font-size:9.5px;color:var(--ink-4);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.pm-item{height:9px;background:var(--surface-2);border-radius:3px}
+.pm-item.wide{height:14px}
+.pm-item.h24{height:24px}
+.pm-item.accent{background:var(--claude-soft)}
+.pm-item.xai{background:#d9cef0}
+.pm-item.student{background:var(--student-soft)}
+.pm-item.instructor{background:var(--instructor-soft)}
+
+/* ── deep link ── */
+.openapp{display:flex;gap:10px;align-items:center;margin:28px 0;padding:18px 22px;background:var(--ink);color:#fff;border-radius:14px;justify-content:space-between}
+.openapp .ttl{font-family:var(--font-serif);font-size:18px;font-weight:500}
+.openapp .sub{font-size:12.5px;color:rgba(255,255,255,.65);margin-top:3px}
+.openapp a{background:var(--claude);color:#fff;padding:10px 16px;border-radius:8px;font-weight:600;font-size:13px;text-decoration:none}
+
+.footer{font-size:11.5px;color:var(--ink-4);margin-top:60px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+
+.kv{display:flex;flex-direction:column;gap:10px}
+.kv-row{display:grid;grid-template-columns:140px 1fr;gap:14px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:12.5px}
+.kv-row:last-child{border-bottom:0}
+.kv-key{color:var(--ink-4);font-weight:500}
+.kv-val{color:var(--ink-2)}
+.kv-val strong{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MASTHEAD
+     ═══════════════════════════════════════════════════════════ -->
+<header class="mast">
+  <div class="mast-left">
+    <div class="mast-eyebrow"><span class="brand-mark">C</span> Claritas · Design Specification v1.0</div>
+    <h1 class="mast-title">
+      설명 가능한 대학 AI LMS,<br>
+      <em>판단의 근거</em>까지 보여주는 경험으로.
+    </h1>
+    <p class="mast-sub">
+      Claritas는 학습자와 교수자의 실제 통증을 해결하는 차세대 xAI LMS입니다.
+      모든 AI 판단은 <strong>근거·신뢰도·대안</strong>과 함께 제공되고, 사람은 언제나 최종 결정자입니다.
+      이 문서는 컨셉·설계 원칙·화면 사양·디자인 시스템·측정 지표·로드맵을 한 권으로 담습니다.
+    </p>
+  </div>
+  <div class="mast-meta">
+    <div class="row"><span>대상 사용자</span><strong>학습자 · 교수자</strong></div>
+    <div class="row"><span>학사 환경</span><strong>4년제 대학 · 학부/대학원</strong></div>
+    <div class="row"><span>디자인 톤</span><strong>Claude Brand System</strong></div>
+    <div class="row"><span>문서 버전</span><strong>v1.0_codex · 2026.04.24</strong></div>
+    <div class="row"><span>연동 프로토타입</span><strong>xAI_LMS_Prototype_codex.html</strong></div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TOC
+     ═══════════════════════════════════════════════════════════ -->
+<nav class="toc" aria-label="Table of contents">
+  <a href="#ch1"><span class="num">01</span><span class="lbl">제품 개요</span><span class="sub">왜 Claritas인가</span></a>
+  <a href="#ch2"><span class="num">02</span><span class="lbl">페르소나 · 페인</span><span class="sub">실제 통증 6가지</span></a>
+  <a href="#ch3"><span class="num">03</span><span class="lbl">설계 원칙</span><span class="sub">xAI 7원칙</span></a>
+  <a href="#ch4"><span class="num">04</span><span class="lbl">정보 구조</span><span class="sub">IA · 레이아웃</span></a>
+  <a href="#ch5"><span class="num">05</span><span class="lbl">학습자 화면</span><span class="sub">6개 핵심 스크린</span></a>
+  <a href="#ch6"><span class="num">06</span><span class="lbl">교수자 화면</span><span class="sub">7개 핵심 스크린</span></a>
+  <a href="#ch7"><span class="num">07</span><span class="lbl">xAI 패턴</span><span class="sub">설명 UI 규범</span></a>
+  <a href="#ch8"><span class="num">08</span><span class="lbl">디자인 시스템</span><span class="sub">Claude tokens</span></a>
+  <a href="#ch9"><span class="num">09</span><span class="lbl">성공 지표</span><span class="sub">North Star · Guardrail</span></a>
+  <a href="#ch10"><span class="num">10</span><span class="lbl">윤리 · 프라이버시</span><span class="sub">AI 거버넌스</span></a>
+  <a href="#ch11"><span class="num">11</span><span class="lbl">로드맵</span><span class="sub">Q1 → Q4</span></a>
+  <a href="#ch11b"><span class="num">11·5</span><span class="lbl">Standards Stack</span><span class="sub">We compose, not replace</span></a>
+  <a href="#ch12"><span class="num">12</span><span class="lbl">부록</span><span class="sub">기존 대비 변경점</span></a>
+</nav>
+
+<div class="openapp">
+  <div>
+    <div class="ttl">실제 서비스처럼 작동하는 인터랙티브 프로토타입</div>
+    <div class="sub">학습자 ↔ 교수자 뷰 전환 · 모든 핵심 화면 · xAI 설명 패널 라이브</div>
+  </div>
+  <a href="xAI_LMS_Prototype_codex.html" target="_blank">프로토타입 열기 →</a>
+</div>
+
+<div class="callout xai">
+  <strong>Codex revision note —</strong> 이 `_codex` 버전은 AI UI를 기능 배지 중심에서 운영 판단 중심으로 재정리합니다.
+  화면 행동은 <strong>VIEW / DECIDE / GENERATE</strong> 3개로 단순화하고, AI 의미는
+  <strong>Detect / Prioritize / Recommend / Draft / Verify</strong> 5개 메타로 유지합니다.
+  핵심 정보는 tooltip 안에 숨기지 않고 카드 표면, xAI 패널, 검토 큐에 직접 노출합니다.
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     01. OVERVIEW
+     ═══════════════════════════════════════════════════════════ -->
+<section id="ch1">
+  <div class="section-h">
+    <div class="section-num">01</div>
+    <div>
+      <div class="section-kicker">Overview</div>
+      <div class="section-title">대학은 <em>LMS가 아니라 학습</em>을 원한다.</div>
+    </div>
+  </div>
+  <p class="section-lead">기존 LMS는 "자료를 올리고, 과제를 받고, 성적을 기록하는 창고"였습니다. 학습자는 길을 잃고, 교수자는 매일 반복되는 운영에 갈리며, 학교는 쌓인 데이터를 해석할 도구가 없었습니다. Claritas는 이 세 계층의 통증을 하나의 AI 레이어로 연결하되, <strong>AI의 모든 판단에 "왜"를 붙이는 방식</strong>으로 신뢰를 회복합니다.</p>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-h">학습자에게</div>
+      <div class="card-sub">AI는 답을 주지 않고, 생각을 엽니다.</div>
+      <p style="font-size:12.5px;color:var(--ink-3);line-height:1.7">소크라틱 튜터, 메타인지 체크, 간격 반복 복습, 맞춤 경로 추천 — 모두 "왜 이렇게 제안했는지" 설명과 함께. 학생은 AI의 블랙박스에 종속되지 않고 자신의 학습을 소유합니다.</p>
+    </div>
+    <div class="card">
+      <div class="card-h">교수자에게</div>
+      <div class="card-sub">루틴을 줄이고, 사람을 만날 시간을.</div>
+      <p style="font-size:12.5px;color:var(--ink-3);line-height:1.7">루브릭 자동 생성 · AI 채점 초안 · 이탈 예측 · 개입 메시지 드래프트 — 모두 교수자가 최종 결정자이며, AI 수정률·편향 신호는 실시간으로 공개됩니다.</p>
+    </div>
+    <div class="card">
+      <div class="card-h">학교에게</div>
+      <div class="card-sub">매 학기가 곧 개선의 데이터입니다.</div>
+      <p style="font-size:12.5px;color:var(--ink-3);line-height:1.7">CLO 달성도·AI 투명성·개입 효과가 대시보드로 정리되고, IR팀과 공유 가능한 포맷으로 자동 생성됩니다. 학사 정책과 접근성 점검도 자동화.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>한 줄 약속 —</strong> Claritas는 자동화로 사람을 대체하지 않고, 사람이 사람과 만날 시간을 만들어냅니다.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     02. PERSONAS & PAIN
+     ═══════════════════════════════════════════════════════════ -->
+<section id="ch2">
+  <div class="section-h">
+    <div class="section-num">02</div>
+    <div>
+      <div class="section-kicker">Personas · Real Pain</div>
+      <div class="section-title">대학 현장의 <em>진짜 통증</em> 6가지.</div>
+    </div>
+  </div>
+  <p class="section-lead">기존 설계서가 "기능"에서 출발했다면, Claritas는 현장에서 관찰된 <strong>통증(pain)</strong>에서 출발합니다. 각 통증은 구체적인 AI 기능과 xAI 규범으로 연결되어 있습니다.</p>
+
+  <div class="persona-strip">
+    <div class="persona s">
+      <div class="ptag">페르소나 A</div>
+      <h3>조석호 · 3학년 학부생</h3>
+      <div class="role">데이터 과학 부전공, 주당 학습 12h, 내향적, 오픈북 과제 선호</div>
+      <div class="pain"><strong>Pain —</strong> "AI가 추천한 강의가 왜 나한테 맞는지 모르겠고, 엄마한테도 설명을 못 하겠어요. 그래서 결국 그냥 친구 따라 신청해요."</div>
+      <div class="pain"><strong>Pain —</strong> "수업 중간에 놓쳤는데, 어디서부터 복습해야 할지 모르겠어요. 영상 처음부터 또 보기엔 시간이 없고요."</div>
+      <div class="pain"><strong>Pain —</strong> "AI 튜터 쓰면 답을 먼저 알려줘서, 나중에 시험장에선 아무것도 생각이 안 나요."</div>
+      <div class="gain"><strong>Gain —</strong> Claritas는 모든 추천·답변에 근거와 신뢰도를 붙이고, 소크라틱 모드는 정답 대신 질문으로 사고를 엽니다.</div>
+    </div>
+
+    <div class="persona i">
+      <div class="ptag">페르소나 B</div>
+      <h3>박지선 · 조교수</h3>
+      <div class="role">데이터 마이닝·머신러닝 담당, 학기 3과목 214명, 대학원 세미나 1, 논문 작성 중</div>
+      <div class="pain"><strong>Pain —</strong> "이번 학기에도 루브릭을 밤 11시에 만들고 있어요. 작년 거랑 거의 같은데 왜 매번 다시 쓰죠?"</div>
+      <div class="pain"><strong>Pain —</strong> "52명 토론 채점을 밤새 했는데 결국 학생마다 비슷한 피드백만 붙였어요. 정말로 학생별로 다른 코멘트를 주고 싶은데 시간이 없어요."</div>
+      <div class="pain"><strong>Pain —</strong> "이탈하는 학생이 있는 건 아는데, 개별 메시지를 일일이 쓰다 보면 결국 한 명도 못 챙겨요."</div>
+      <div class="gain"><strong>Gain —</strong> AI가 루브릭 초안·채점 초안·개입 메시지 초안까지 만들고, 교수자는 최종 승인자·편집자 역할에 집중합니다.</div>
+    </div>
+  </div>
+
+  <div class="section-kicker" style="margin-top:28px">교차 관찰 — 시스템 레벨 통증</div>
+  <div class="grid-3" style="margin-top:8px">
+    <div class="card">
+      <div class="card-h">① AI 블랙박스 불신</div>
+      <p style="font-size:12.5px;color:var(--ink-3)">"AI가 왜 이런 결정을 했는지 모르면, 학생·교수자 모두 쓰고 싶지 않아요." — Claritas는 모든 판단에 근거·신뢰도·대안을 제시합니다. (xAI 원칙 §3)</p>
+    </div>
+    <div class="card">
+      <div class="card-h">② 개인화 vs. 공정성</div>
+      <p style="font-size:12.5px;color:var(--ink-3)">맞춤은 좋지만, 누군가에게 불리한 추천은 안 됩니다. Claritas는 민감 변수(성·국적)를 제외하고 편향 모니터를 매 학기 돌립니다.</p>
+    </div>
+    <div class="card">
+      <div class="card-h">③ AI 남용과 학업 정직성</div>
+      <p style="font-size:12.5px;color:var(--ink-3)">무조건 금지도, 무조건 허용도 답이 아닙니다. 과제마다 AI 사용 범위를 교수가 설정하고, 학생은 AI 사용 로그를 자동 첨부합니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     03. PRINCIPLES
+     ═══════════════════════════════════════════════════════════ -->
+<section id="ch3">
+  <div class="section-h">
+    <div class="section-num">03</div>
+    <div>
+      <div class="section-kicker">Design Principles</div>
+      <div class="section-title"><em>xAI 7원칙</em> — Claritas가 UI로 지키는 약속.</div>
+    </div>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:18px">
+    <div class="princ">
+      <div class="princ-num">1</div>
+      <div class="princ-title">근거를 감추지 않는다</div>
+      <div class="princ-body">모든 AI 추천·평가·개입은 "왜"를 클릭 한 번으로 볼 수 있어야 한다. 숨기거나 축약하지 않는다.</div>
+    </div>
+    <div class="princ">
+      <div class="princ-num">2</div>
+      <div class="princ-title">신뢰도를 수치로 말한다</div>
+      <div class="princ-body">"높음/낮음" 같은 모호한 표현 대신 0–100% 신뢰도와 그 의미를 표기한다. 낮은 신뢰도는 사람이 반드시 검토.</div>
+    </div>
+    <div class="princ">
+      <div class="princ-num">3</div>
+      <div class="princ-title">사람을 최종 결정자로</div>
+      <div class="princ-body">AI 판단은 항상 <strong>초안(draft)</strong>이다. 승인·발송·성적 확정은 항상 사람이. 최소 2번 이상 "검토" 단계를 둔다.</div>
+    </div>
+    <div class="princ">
+      <div class="princ-num">4</div>
+      <div class="princ-title">대안을 함께 제시한다</div>
+      <div class="princ-body">하나의 추천이 아니라 <strong>A·B·C 세 초안</strong>을 동시에 제시하고, 각 대안이 어떻게 다른지 설명한다.</div>
+    </div>
+    <div class="princ">
+      <div class="princ-num">5</div>
+      <div class="princ-title">편향을 스스로 감시한다</div>
+      <div class="princ-body">성적·개입·평가에서 성별·국적·학년별 격차를 상시 모니터링. 임계치 초과 시 자동 경고.</div>
+    </div>
+    <div class="princ">
+      <div class="princ-num">6</div>
+      <div class="princ-title">학습자의 데이터는 학습자의 것</div>
+      <div class="princ-body">AI 동반자 대화·감정 체크는 기본적으로 <strong>비공유</strong>. 공유 버튼을 명시적으로 누를 때만 교수자에게 간다.</div>
+    </div>
+    <div class="princ">
+      <div class="princ-num">7</div>
+      <div class="princ-title">답이 아니라 질문으로</div>
+      <div class="princ-body">학생용 AI는 기본값이 <strong>소크라틱 모드</strong>. 정답을 주지 않고 한 단계 앞 질문을 한다. 교수자 정책으로 모드 잠금 가능.</div>
+    </div>
+  </div>
+
+  <div class="callout xai">
+    <strong>디자인 규약 —</strong> 이 7원칙 중 하나라도 위배되면, 기능 출시를 보류한다. 리뷰 체크리스트는 <code>/internal/xai-review.md</code>에 유지.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     04. INFORMATION ARCHITECTURE
+     ═══════════════════════════════════════════════════════════ -->
+<section id="ch4">
+  <div class="section-h">
+    <div class="section-num">04</div>
+    <div>
+      <div class="section-kicker">Information Architecture</div>
+      <div class="section-title">좌측은 <em>여정</em>, 가운데는 <em>작업</em>, 우측은 <em>이유</em>.</div>
+    </div>
+  </div>
+  <p class="section-lead">기존 LMS가 "기능 메뉴"였다면, Claritas는 <strong>사람의 여정</strong>을 따라갑니다. 좌측은 오늘–이번 주–학기로 흐르는 시간 축, 가운데는 실제 작업이 벌어지는 공간, 우측은 그 작업의 "이유"를 항상 곁에 둡니다.</p>
+
+  <div class="grid-2" style="margin-bottom:18px">
+    <div class="card">
+      <div class="card-h">3열 레이아웃 · 왜 이 구조인가</div>
+      <div class="panel-mock">
+        <div class="pm nav">
+          <div class="pm-label">여정 (Journey)</div>
+          <div class="pm-item wide"></div>
+          <div class="pm-item"></div>
+          <div class="pm-item accent"></div>
+          <div class="pm-item"></div>
+          <div class="pm-item"></div>
+          <div class="pm-item student"></div>
+        </div>
+        <div class="pm main">
+          <div class="pm-label">작업 (Work)</div>
+          <div class="pm-item h24"></div>
+          <div class="pm-item wide"></div>
+          <div class="pm-item wide"></div>
+          <div class="pm-item"></div>
+          <div class="pm-item"></div>
+          <div class="pm-item h24 accent"></div>
+        </div>
+        <div class="pm aside">
+          <div class="pm-label" style="color:var(--xai)">이유 (Why)</div>
+          <div class="pm-item xai"></div>
+          <div class="pm-item xai"></div>
+          <div class="pm-item"></div>
+          <div class="pm-item xai"></div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin-top:12px;line-height:1.6"><strong>좌 (240px)</strong> 내비게이션 + 경로 미니맵. <strong>중 (유연)</strong> 실제 작업. <strong>우 (340px)</strong> xAI 설명 · AI 동반자 · 컨텍스트.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-h">주요 페이지 지도 (IA)</div>
+      <div class="kv">
+        <div class="kv-row"><div class="kv-key">학습자 허브</div><div class="kv-val">대시보드 · 오늘의 학습 · 강의 탐색 · 강의 수강 · 과제·토론 · 피드백 · <strong>학습 동반자</strong> · 나의 인사이트</div></div>
+        <div class="kv-row"><div class="kv-key">교수자 허브</div><div class="kv-val">티칭 홈 · 오늘 할 일 · 학습 설계 · <strong>루브릭 빌더</strong> · AI 평가 지원 · <strong>클래스 건강도</strong> · 학습 개입 · 학기 인사이트</div></div>
+        <div class="kv-row"><div class="kv-key">공통 레이어</div><div class="kv-val">⌘K 자연어 검색 · 알림 센터 · 동기화 상태 · 프로필·프라이버시 설정</div></div>
+        <div class="kv-row"><div class="kv-key">AI 레이어</div><div class="kv-val">Claritas Companion(우측 패널 상시) · xAI 설명 바(모든 AI 뱃지 클릭 시 확장)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">자연어 ⌘K · 단일 진입점</div>
+    <p style="font-size:13px;color:var(--ink-2);line-height:1.7">
+      기존 LMS는 원하는 데이터를 찾기까지 <strong>메뉴 4단계</strong>를 거쳐야 했습니다. Claritas는 모든 탐색을 자연어 한 줄로 대체합니다.<br>
+      <span style="color:var(--ink-3)">예: "왜 김유진 학생 이탈 위험이 올라갔지?" → 위험 점수 · 지난 2주 신호 · 개입 제안이 한 화면에.</span>
+    </p>
+    <div class="flow">
+      <div class="flow-node human">사용자 자연어 입력</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node ai">의도 분류</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node ai">소스 검색 (자료·데이터)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node ai">답안 + 근거 생성</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node human">사용자 검토 · 후속 질문</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     05. STUDENT SCREENS
+     ═══════════════════════════════════════════════════════════ -->
+<section id="ch5">
+  <div class="section-h">
+    <div class="section-num">05</div>
+    <div>
+      <div class="section-kicker">Student Screens</div>
+      <div class="section-title">학습자 핵심 화면 <em>6</em>.</div>
+    </div>
+  </div>
+
+  <div class="stack">
+
+    <!-- S-01 Dashboard -->
+    <article class="screen">
+      <div class="screen-head">
+        <div>
+          <div class="eyebrow">S-01 · 학습자 대시보드</div>
+          <h3>오늘은 <em>집중 학습에 유리한 시간</em></h3>
+        </div>
+        <div class="tags"><span class="tag tag-student">학습자</span><span class="tag tag-new">xAI 강화</span></div>
+      </div>
+      <div class="screen-body">
+        <p style="font-size:13px;color:var(--ink-3);margin-bottom:14px">
+          학생의 일주일을 "할 일 리스트"가 아니라 <strong>집중 리듬</strong>으로 재구성합니다. 개인의 시간대별 이해도 패턴을 학습해, "지금 무엇을 하면 가장 효과적인지"를 제안합니다.
+        </p>
+
+        <div class="ba-row">
+          <div class="ba-card ba-before">
+            <div class="lbl">Before</div>
+            숙제 3개, 마감 임박 2건, 강의 공지 5건이 나열만 됨. 학생은 어디서부터 시작할지 모름.
+          </div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-card ba-after">
+            <div class="lbl">Claritas</div>
+            "오늘 14–17시가 당신 최고 집중 구간. <strong>3가지만</strong> 끝내도 됩니다" — 리듬·맥락·최소 성공 기준 제시
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-top:18px">
+          <div class="pattern-card"><h4>집중 윈도우 예측</h4><p>최근 8주 학습 로그 기반 · 요일×시간대 이해도 히트맵</p><div class="when"><strong>신뢰도</strong> 78% 이상에서만 표시. 그 이하는 "데이터 축적 중"으로 안내.</div></div>
+          <div class="pattern-card"><h4>AI 학습 동반자 (상시)</h4><p>우측 패널에 소크라틱 모드로 대기. 강의·노트만 근거로 답변.</p><div class="when"><strong>프라이버시</strong> 모든 대화 암호화 · 교수자 미공유 (옵트인)</div></div>
+          <div class="pattern-card"><h4>이탈 조기 경보 (셀프)</h4><p>학생 본인에게만 표시. "지금 20분 개입 시 B+ 유지 확률 ↑"</p><div class="when"><strong>원칙</strong> 공포 유도 금지 · 행동 가능한 다음 단계 제시</div></div>
+        </div>
+
+        <div class="callout" style="margin-top:18px">
+          <strong>화면 요소 —</strong> Hero (인사 + 오늘의 코멘트) → KPI 4종 (평점 예측·학습 시간·이해도 신뢰도·AI 활용) → 오늘의 경로 3건 → 수강 강의 그리드 → 우측 Claritas Companion.
+        </div>
+      </div>
+    </article>
+
+    <!-- S-02 Explore -->
+    <article class="screen">
+      <div class="screen-head">
+        <div>
+          <div class="eyebrow">S-02 · 강의 탐색</div>
+          <h3>왜 이 추천인가요? — <em>근거가 먼저</em></h3>
+        </div>
+        <div class="tags"><span class="tag tag-student">학습자</span><span class="tag tag-xai">xAI 핵심</span></div>
+      </div>
+      <div class="screen-body">
+        <div class="screen-layout">
+          <div>
+            <p style="font-size:13px;color:var(--ink-3);line-height:1.7">AI 추천을 <strong>소스 가중치</strong>까지 열어 보여줍니다. 학생은 가중치 슬라이더로 자신의 선호를 즉시 반영할 수 있고, 그 즉시 재추천이 일어납니다. "진로 관심사"에 50% 두고 싶은 학생과 "학점 균형"에 50% 두고 싶은 학생이 <strong>각자 다른 추천</strong>을 받습니다.</p>
+
+            <div class="section-kicker" style="margin-top:18px">신규 UI 패턴</div>
+            <ul style="font-size:12.5px;color:var(--ink-2);line-height:1.8;padding-left:18px">
+              <li>📊 <strong>추천 근거 카드</strong> — 수강이력 매칭·CASE 역량·선배 경로·관심 키워드의 가중치를 숫자로 제시</li>
+              <li>🎛 <strong>가중치 슬라이더</strong> — 학생이 직접 조정, 즉시 재계산, 이전 설정과 비교</li>
+              <li>🔒 <strong>데이터 권한 카드</strong> — 어떤 데이터가 쓰였는지, 어떤 데이터는 안 쓰였는지 명시</li>
+            </ul>
+          </div>
+          <div class="xai-box">
+            <div class="xai-head"><span class="spark">✦</span> 왜 이 추천인가요?</div>
+            <div class="xai-body">
+              당신이 <strong>5학기 27과목</strong>, 최근 <strong>3과목 A/A+</strong>, 자기소개서 <strong>"데이터 기반 의사결정"</strong> 관심사를 함께 봤습니다. 동일 CASE 프로필 선배 342명 중 <strong>78%가 ML 응용을 선택</strong>, <strong>91%가 B+ 이상</strong>.
+            </div>
+            <div class="conf"><span>확신도</span><div class="conf-bar"><div class="conf-bar-fill" style="width:87%"></div></div><span class="conf-val">87%</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- S-03 Lecture -->
+    <article class="screen">
+      <div class="screen-head">
+        <div>
+          <div class="eyebrow">S-03 · 강의 수강</div>
+          <h3>영상 + AI 요약 + <em>메타인지 체크</em></h3>
+        </div>
+        <div class="tags"><span class="tag tag-student">학습자</span><span class="tag tag-new">메타인지</span></div>
+      </div>
+      <div class="screen-body">
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.7">기존 영상 플레이어가 "재생·자막·속도"만 제공했다면, Claritas는 학습 과학에서 가져온 세 가지를 추가합니다.</p>
+        <div class="grid-3" style="margin-top:14px">
+          <div class="pattern-card">
+            <h4>① 동료 힌트 마커</h4>
+            <p>영상 타임라인에 <strong>다른 수강생이 멈춘 구간</strong>이 표시됩니다. "나만 어려운 게 아니다"라는 심리적 안전감 + 실제 어려운 지점 파악.</p>
+            <div class="when"><strong>익명 집계</strong> 최소 10명 이상의 데이터만 사용</div>
+          </div>
+          <div class="pattern-card">
+            <h4>② 15분 메타인지 체크</h4>
+            <p>"지금까지 내용, 친구에게 설명할 수 있나요?" — 1~5점. <strong>교수자 비공유</strong>, AI 튜터가 즉시 맞춤 점검 문제 생성.</p>
+            <div class="when"><strong>연구 근거</strong> Metacognitive pause 효과 검증 다수</div>
+          </div>
+          <div class="pattern-card">
+            <h4>③ AI 요약 위 용어 호버</h4>
+            <p>요약 bullet의 핵심 용어에 호버 시 <strong>정의·공식</strong>이 툴팁으로. 클릭 시 교재·영상 원본 위치로 점프.</p>
+            <div class="when"><strong>출처</strong> 모든 툴팁에 원 소스 링크</div>
+          </div>
+        </div>
+
+        <div class="callout xai" style="margin-top:18px">
+          <strong>AI 요약 품질 기준 —</strong> 영상 스크립트·슬라이드·교수 업로드 자료를 종합. 생성 후 "사실 검증 루프" 2회. 학생은 👍👎 피드백으로 모델을 개선합니다.
+        </div>
+      </div>
+    </article>
+
+    <!-- S-04 Assignment -->
+    <article class="screen">
+      <div class="screen-head">
+        <div>
+          <div class="eyebrow">S-04 · 과제 · 토론</div>
+          <h3>소크라틱 튜터, <em>답은 주지 않는다</em></h3>
+        </div>
+        <div class="tags"><span class="tag tag-student">학습자</span><span class="tag tag-xai">정직성</span></div>
+      </div>
+      <div class="screen-body">
+        <div class="screen-layout">
+          <div>
+            <p style="font-size:13px;color:var(--ink-3);line-height:1.7">AI 남용 문제의 핵심은 "답을 받아쓰기"입니다. Claritas의 AI 튜터는 과제 모드에서 기본값이 <strong>소크라틱(질문 답례)</strong>이고, 교수가 설정한 개입 한도를 초과할 수 없습니다.</p>
+
+            <div class="section-kicker" style="margin-top:18px">투명성 로그</div>
+            <p style="font-size:12.5px;color:var(--ink-2);line-height:1.7">제출 시 자동으로 첨부되는 "AI 사용 내역": 질문 횟수·힌트 횟수·코드 생성 여부·대화 요약. 교수자는 <strong>별도 클릭 없이</strong> 확인 가능, 학생은 제출 전 본인 확인.</p>
+          </div>
+          <div class="xai-box">
+            <div class="xai-head"><span class="spark">✦</span> 이번 대화의 개입 방식</div>
+            <div class="xai-body">
+              튜터는 <strong>정답을 제공하지 않았고</strong>, 질문 3회 / 힌트 1회 / 코드 생성 0회를 수행했습니다. 교수자 정책("개념 질문 허용, 코드 생성 금지")을 준수.
+            </div>
+            <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+              <span class="tag tag-xai">질문 3</span><span class="tag tag-xai">힌트 1</span><span class="tag tag-line">코드 0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- S-05 Feedback -->
+    <article class="screen">
+      <div class="screen-head">
+        <div>
+          <div class="eyebrow">S-05 · 피드백 · 학습 보완</div>
+          <h3>점수가 <em>왜</em> 이 점수인가</h3>
+        </div>
+        <div class="tags"><span class="tag tag-student">학습자</span><span class="tag tag-xai">채점 설명</span></div>
+      </div>
+      <div class="screen-body">
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.7">점수는 결과가 아니라 <strong>다음 학습의 시작점</strong>입니다. 감점 구간은 학생의 실제 제출 문장과 루브릭 기준이 1:1로 매핑되어 표시됩니다.</p>
+
+        <div class="ba-row" style="margin-top:14px">
+          <div class="ba-card ba-before">
+            <div class="lbl">Before</div>
+            "84점, 해석이 부족합니다" — 학생은 어디가 어떻게 부족한지 모른 채 다음 과제로.
+          </div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-card ba-after">
+            <div class="lbl">Claritas</div>
+            감점 8점의 구간 = 학생의 <strong>실제 문장</strong> + 루브릭의 "충분 요건" + <strong>7분 맞춤 보완 학습</strong> 자동 생성
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top:14px">
+          <strong>인간 평가와 AI 분석의 역할 분리 —</strong> 교수자 코멘트는 왼쪽, AI 보완 분석은 오른쪽. 어느 쪽이 누가 썼는지 학생이 혼동하지 않도록 명시.
+        </div>
+      </div>
+    </article>
+
+    <!-- S-06 Insight -->
+    <article class="screen">
+      <div class="screen-head">
+        <div>
+          <div class="eyebrow">S-06 · 나의 인사이트</div>
+          <h3>나는 <em>언제, 어떻게</em> 가장 잘 배우는가</h3>
+        </div>
+        <div class="tags"><span class="tag tag-student">학습자</span><span class="tag tag-new">자기이해</span></div>
+      </div>
+      <div class="screen-body">
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.7">학생을 등급화하지 않고 <strong>자기 이해의 도구</strong>로 제공합니다. 시간대별 이해도·학습 유형 성향·CASE 역량 프로필 — 모두 학생 본인 소유 데이터이며, 외부 공유는 명시적 동의 기반.</p>
+
+        <div class="grid-3" style="margin-top:14px">
+          <div class="pattern-card"><h4>시간대별 이해도 히트맵</h4><p>요일 × 시간 매트릭스. 생산적 구간 · 취약 구간 표시.</p></div>
+          <div class="pattern-card"><h4>학습 유형 바</h4><p>시각·텍스트·실습·토론 네 축. 약점 발견 시 자동 보완 제안.</p></div>
+          <div class="pattern-card"><h4>CASE 역량 링</h4><p>취업지원센터·지도교수와 공유 범위 직접 선택.</p></div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     06. INSTRUCTOR SCREENS
+     ═══════════════════════════════════════════════════════════ -->
+<section id="ch6">
+  <div class="section-h">
+    <div class="section-num">06</div>
+    <div>
+      <div class="section-kicker">Instructor Screens</div>
+      <div class="section-title">교수자 핵심 화면 <em>7</em>.</div>
+    </div>
+  </div>
+
+  <div class="stack">
+
+    <!-- I-01 Teaching Home -->
+    <article class="screen">
+      <div class="screen-head">
+        <div>
+          <div class="eyebrow">I-01 · 티칭 홈 (대시보드)</div>
+          <h3>오늘 <em>3가지 결정</em>이 기다립니다</h3>
+        </div>
+        <div class="tags"><span class="tag tag-instructor">교수자</span><span class="tag tag-new">의사결정 중심</span></div>
+      </div>
+      <div class="screen-body">
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.7">기존 교수자 대시보드가 "숫자 나열"이었다면, Claritas는 <strong>오늘 내릴 결정</strong>에서 시작합니다. 각 결정에는 urgency(high/mid/low)·근거·무시 옵션·수락 시 다음 단계가 따라옵니다.</p>
+        <div class="grid-3" style="margin-top:14px">
+          <div class="pattern-card"><h4>결정 카드 · urgency high</h4><p>6명 학생 이탈 위험 상승 → 개입 메시지 초안 준비됨</p><div class="when"><strong>근거</strong> 각 학생 위험 점수 0.7 이상</div></div>
+          <div class="pattern-card"><h4>결정 카드 · urgency mid</h4><p>AI 채점 초안 24건 대기 → 신뢰도 높은 20건·불확실 4건</p><div class="when"><strong>안전</strong> 신뢰도 &lt;75% 자동 검토 플래그</div></div>
+          <div class="pattern-card"><h4>결정 카드 · urgency low</h4><p>다음 주 루브릭 준비 완료 → 지난 3학기 데이터 반영</p><div class="when"><strong>편집성</strong> AI에게 자연어로 수정 지시 가능</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- I-02 Course Design -->
+    <article class="screen">
+      <div class="screen-head">
+        <div>
+          <div class="eyebrow">I-02 · 학습 설계</div>
+          <h3>AI가 짠 <em>15주 설계안</em>, 당신이 감독합니다</h3>
+        </div>
+        <div class="tags"><span class="tag tag-instructor">교수자</span><span class="tag tag-new">세 초안</span></div>
+      </div>
+      <div class="screen-body">
+        <div class="screen-layout">
+          <div>
+            <p style="font-size:13px;color:var(--ink-3);line-height:1.7">AI는 <strong>설계안을 3가지</strong> 만듭니다. 균형형 / 분석 강화 / 글쓰기 강화. 교수자는 탭 전환만으로 초안을 비교하고, 각 선택의 근거(지난 학기 성적 분포·학생 피드백·CASE 매핑·학사 지침)를 가중치로 확인합니다.</p>
+            <div class="section-kicker" style="margin-top:16px">자동 점검</div>
+            <ul style="font-size:12.5px;color:var(--ink-2);line-height:1.8;padding-left:18px">
+              <li>✓ <strong>학점 배분</strong> 학과 규정 범위 확인</li>
+              <li>✓ <strong>CLO ↔ 평가 매핑</strong> 누락 자동 감지</li>
+              <li>✓ <strong>선수 과목 참조</strong> 연결 확인</li>
+              <li>⚠ <strong>접근성 가이드</strong> 자막·대체 텍스트 누락 알림</li>
+            </ul>
+          </div>
+          <div class="xai-box">
+            <div class="xai-head"><span class="spark">✦</span> 초안 A 근거 가중치</div>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+              <div style="display:flex;justify-content:space-between"><span>지난 3학기 성적 분포</span><strong style="color:var(--xai)">42%</strong></div>
+              <div style="display:flex;justify-content:space-between"><span>학생 평가 피드백</span><strong style="color:var(--xai)">31%</strong></div>
+              <div style="display:flex;justify-content:space-between"><span>CASE 역량 매핑</span><strong style="color:var(--xai)">18%</strong></div>
+              <div style="display:flex;justify-content:space-between"><span>학과 운영 지침</span><strong style="color:var(--xai)">9%</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- I-03 Rubric Builder -->
+    <article class="screen">
+      <div class="screen-head">
+        <div>
+          <div class="eyebrow">I-03 · 루브릭 빌더</div>
+          <h3>AI 초안을 <em>당신의 언어로</em> 손질합니다</h3>
+        </div>
+        <div class="tags"><span class="tag tag-instructor">교수자</span><span class="tag tag-xai">공정성 진단</span></div>
+      </div>
+      <div class="screen-body">
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.7">기준·배점·레벨(A/B/C) 표를 편집하면서, 하단에 <strong>공정성 진단 패널</strong>이 상시 작동합니다. 지난 학기 데이터로 "이 루브릭으로 채점했을 때 성별·국적·학년별 점수 격차"를 미리 시뮬레이션합니다.</p>
+        <div class="ba-row" style="margin-top:14px">
+          <div class="ba-card ba-before"><div class="lbl">Before</div>루브릭 작성 → 학기 끝에 편향 여부 확인 → 이미 늦음</div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-card ba-after"><div class="lbl">Claritas</div>루브릭 편집 중 <strong>실시간 편향 시뮬레이션</strong> → 출시 전 조정</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- I-04 AI Grading -->
+    <article class="screen">
+      <div class="screen-head">
+        <div>
+          <div class="eyebrow">I-04 · AI 평가 지원</div>
+          <h3>AI는 <em>초안</em>, 사람이 <em>결정</em></h3>
+        </div>
+        <div class="tags"><span class="tag tag-instructor">교수자</span><span class="tag tag-xai">신뢰도 분류</span></div>
+      </div>
+      <div class="screen-body">
+        <div class="grid-3">
+          <div class="metric"><div class="metric-lbl">AI 초안 완료</div><div class="metric-val">24<em>건</em></div><div class="metric-sub">평균 신뢰도 86%</div></div>
+          <div class="metric"><div class="metric-lbl">교수 검토 필수</div><div class="metric-val">8<em>건</em></div><div class="metric-sub">신뢰도 &lt; 75%</div></div>
+          <div class="metric"><div class="metric-lbl">AI 수정률</div><div class="metric-val">11<em>%</em></div><div class="metric-sub">교수 조정 폭 평균 ±4점</div></div>
+        </div>
+
+        <div class="callout xai" style="margin-top:16px">
+          <strong>규범 —</strong> AI 점수 옆에 항상 <strong>루브릭 레벨 매핑</strong>과 <strong>근거 인용문</strong>이 표시됩니다. 교수자는 한 클릭으로 조정, 조정 폭은 모델 학습 데이터로.
+        </div>
+      </div>
+    </article>
+
+    <!-- I-05 Class Health -->
+    <article class="screen">
+      <div class="screen-head">
+        <div>
+          <div class="eyebrow">I-05 · 클래스 건강도</div>
+          <h3>수업이 <em>어디서</em> 흔들리는지 보입니다</h3>
+        </div>
+        <div class="tags"><span class="tag tag-instructor">교수자</span><span class="tag tag-new">예측 분석</span></div>
+      </div>
+      <div class="screen-body">
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.7">참여 히트맵(52명×14주)으로 <strong>수업 단위의 약점 구간</strong>을 시각화합니다. 특정 주차에 저참여가 몰리면 "다음 학기 해당 주차 재설계" 제안이 자동 생성됩니다.</p>
+        <div class="grid-2" style="margin-top:14px">
+          <div class="card" style="padding:16px">
+            <div class="card-h" style="font-size:15px">개별 학생 · 위험 예측</div>
+            <p style="font-size:12px;color:var(--ink-3)">위험 점수 · 근거 top 5 · 추천 개입 수단 × 효과 예측</p>
+          </div>
+          <div class="card" style="padding:16px">
+            <div class="card-h" style="font-size:15px">집단 패턴 · 주차별</div>
+            <p style="font-size:12px;color:var(--ink-3)">히트맵 · 질문 트렌드 · 감정 온도(익명 집계)</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- I-06 Intervention -->
+    <article class="screen">
+      <div class="screen-head">
+        <div>
+          <div class="eyebrow">I-06 · 학습 개입</div>
+          <h3>따뜻함은 사람이, <em>맞춤은 AI가</em></h3>
+        </div>
+        <div class="tags"><span class="tag tag-instructor">교수자</span><span class="tag tag-xai">윤리 체크</span></div>
+      </div>
+      <div class="screen-body">
+        <div class="flow">
+          <div class="flow-node">1 · 대상 선정</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node ai">2 · 원인 분석 (xAI)</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node ai">3 · 메시지 초안</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node human">4 · 교수 검토</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node human">5 · 발송 · 추적</div>
+        </div>
+        <div class="grid-2" style="margin-top:16px">
+          <div class="pattern-card"><h4>메시지 톤 선택</h4><p>공감 · 격려 · 단호 — 세 톤. 교수자가 선택하면 AI가 전체 문장을 재생성. 하이라이트된 구간은 "왜 이 표현을 썼는지" 툴팁 제공.</p></div>
+          <div class="pattern-card"><h4>윤리 체크 자동</h4><p>비난·단정·공개·강제성 감지. 개인정보 구체 언급 시 확인 권장. 발송 전 반드시 통과.</p></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- I-07 Semester Insights -->
+    <article class="screen">
+      <div class="screen-head">
+        <div>
+          <div class="eyebrow">I-07 · 학기 인사이트</div>
+          <h3>수업이 <em>사람들에게</em> 어떻게 도달했는가</h3>
+        </div>
+        <div class="tags"><span class="tag tag-instructor">교수자</span><span class="tag tag-new">IR 공유</span></div>
+      </div>
+      <div class="screen-body">
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.7">학기 말이 아니라 <strong>상시 누적</strong>. CLO 달성도·AI 사용 투명성·개입 효과·질문 트렌드가 한 페이지에. IR팀 공유 포맷(CSV·PDF) 자동 생성.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     07. xAI PATTERNS
+     ═══════════════════════════════════════════════════════════ -->
+<section id="ch7">
+  <div class="section-h">
+    <div class="section-num">07</div>
+    <div>
+      <div class="section-kicker">xAI Interface Patterns</div>
+      <div class="section-title">설명 UI <em>규범 카탈로그</em>.</div>
+    </div>
+  </div>
+  <p class="section-lead">모든 AI 기능은 아래 7가지 UI 패턴 중 최소 하나를 반드시 사용합니다. 패턴 사용 여부는 디자인 리뷰 체크리스트 항목입니다.</p>
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-h">Focus AI Mode — SNB와 AI Panel이 각자 자기 영역에서 확장·축소되는 상태</div>
+    <p style="font-size:13px;color:var(--ink-3);line-height:1.7;margin-bottom:12px">
+      기본 화면은 좌 Navigation / 중앙 Workspace / 우 AI Panel의 3단 구조를 유지합니다. SNB 접힘은 SNB 내부 핸들이 소유하고, AI Panel 확장은 AI Panel 내부 핸들이 소유합니다. 사용자가 AI 판단을 자세히 검토할 때 우측 패널만 넓힐 수 있고, 더 많은 공간이 필요하면 SNB를 아이콘 레일로 접습니다. 이 모드는 새 앱이 아니라 같은 Claritas 화면 안에서의 임시 집중 상태입니다.
+    </p>
+    <table class="spec">
+      <tr><th>항목</th><th>규칙</th></tr>
+      <tr><td>Grid</td><td>기본 248px · 1fr · 344px / SNB 접힘 72px · 1fr · 344px / AI 확장 248px · 1fr · 480px / 둘 다 활성 72px · 1fr · 480px</td></tr>
+      <tr><td>Entry</td><td>SNB는 SNB 핸들로만 접고 펼침. AI Panel은 패널 상단 핸들 또는 명시적 AI 실행 CTA로 확장. 페이지 진입만으로 자동 전환 금지.</td></tr>
+      <tr><td>Exit</td><td>AI Panel 내부 축소 버튼과 Esc 키. 현재 위치 breadcrumb는 중앙 상단에 유지.</td></tr>
+      <tr><td>Collapsed SNB</td><td>아이콘만 노출. hover tooltip에 메뉴명과 count를 표시하고 active indicator는 유지.</td></tr>
+      <tr><td>AI Panel Order</td><td>Judgment → Recommended Action → Evidence → Uncertainty → Measurement Plan → Override Reason.</td></tr>
+      <tr><td>AI Touchpoint</td><td>AI와 상호작용 가능한 항목만 ✦/AI 뱃지와 실행 동사 CTA를 갖는다. 단순 정보 카드에는 AI 표시를 붙이지 않는다.</td></tr>
+      <tr><td>금지</td><td>채팅창처럼 보이게 만들거나, 중앙 Workspace를 사라지게 하거나, AI 단독 승인/채점으로 읽히게 만드는 표현.</td></tr>
+    </table>
+  </div>
+
+  <div class="grid-3">
+    <div class="pattern-card">
+      <h4>① ✦ AI 뱃지</h4>
+      <p>AI 생성·분석 결과임을 즉시 알리는 퍼플 뱃지. 호버 시 간단 설명, 클릭 시 전체 근거 패널.</p>
+      <div class="when"><strong>Use</strong> 모든 생성 컨텐츠 · 추천 · 예측 · 평가</div>
+    </div>
+    <div class="pattern-card">
+      <h4>② 근거 리스트 (Sources)</h4>
+      <p>판단에 쓰인 데이터 소스와 가중치. 예: "수강 이력 +38, CASE +26, 선배 n=342 +19"</p>
+      <div class="when"><strong>Use</strong> 추천 · 예측 · 분류</div>
+    </div>
+    <div class="pattern-card">
+      <h4>③ 신뢰도 바</h4>
+      <p>0–100% 확신도 + 색상. 낮을수록 "사람 검토 권장" 뱃지 추가.</p>
+      <div class="when"><strong>Use</strong> 점수 · 이탈 예측 · 채점 초안</div>
+    </div>
+    <div class="pattern-card">
+      <h4>④ 하이라이트 툴팁</h4>
+      <p>AI가 강조한 단어·문장에 호버 시 "왜 이 단어를 강조했나" 설명.</p>
+      <div class="when"><strong>Use</strong> 메시지 초안 · 요약 · 피드백</div>
+    </div>
+    <div class="pattern-card">
+      <h4>⑤ 대안 초안 (A/B/C)</h4>
+      <p>단일 추천 대신 3가지 초안을 동시 제시. 각 안의 특성·예상 결과 비교.</p>
+      <div class="when"><strong>Use</strong> 루브릭 · 설계안 · 메시지</div>
+    </div>
+    <div class="pattern-card">
+      <h4>⑥ 투명성 로그</h4>
+      <p>AI가 이번 세션에서 한 행동 목록. 질문 N회·힌트 N회·코드 생성 N회.</p>
+      <div class="when"><strong>Use</strong> AI 튜터 · 과제 제출</div>
+    </div>
+    <div class="pattern-card">
+      <h4>⑦ Focus AI Mode</h4>
+      <p>SNB를 아이콘 레일로 접고 우측 AI Panel을 확장해 판단·근거·불확실성·실행을 한 번에 검토하는 임시 집중 상태.</p>
+      <div class="when"><strong>Use</strong> 재계획 · 자료 개선 · 채점 불확실 · 개입 시뮬레이션</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     08. DESIGN SYSTEM
+     ═══════════════════════════════════════════════════════════ -->
+<section id="ch8">
+  <div class="section-h">
+    <div class="section-num">08</div>
+    <div>
+      <div class="section-kicker">Claude Design System</div>
+      <div class="section-title">따뜻한 종이, 또렷한 <em>이탤릭</em>, 한 방울의 오렌지.</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-h">타이포그래피</div>
+      <div class="type-sample" style="padding:16px 18px;margin-top:4px">
+        <div style="font-family:var(--font-serif);font-size:28px;font-weight:500;letter-spacing:-.015em">판단의 <em style="font-style:normal;color:var(--claude);font-weight:700">근거</em>까지 보여주는</div>
+        <div class="type-spec">Fraunces · weight 500 · letter-spacing -1.5% · italic accent</div>
+      </div>
+      <div class="type-sample" style="padding:16px 18px;margin-top:10px">
+        <div style="font-family:var(--font-sans);font-size:14px;line-height:1.65">본문은 Inter. 한글은 Apple SD Gothic Neo / Noto Sans KR로 폴백됩니다. 읽기 편한 14px·line-height 1.55–1.65.</div>
+        <div class="type-spec">Inter · weight 400/500/600 · size 12–15px</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h">색 팔레트 (Semantic)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+        <div class="chip-color"><div class="chip-sw" style="background:var(--bg)"></div><div class="chip-info"><div class="chip-name">배경</div><div class="chip-var">#faf9f5</div></div></div>
+        <div class="chip-color"><div class="chip-sw" style="background:var(--claude)"></div><div class="chip-info"><div class="chip-name">Claude 오렌지</div><div class="chip-var">#c15f3c</div></div></div>
+        <div class="chip-color"><div class="chip-sw" style="background:var(--student)"></div><div class="chip-info"><div class="chip-name">학습자 그린</div><div class="chip-var">#2f7a5a</div></div></div>
+        <div class="chip-color"><div class="chip-sw" style="background:var(--instructor)"></div><div class="chip-info"><div class="chip-name">교수자 인디고</div><div class="chip-var">#4a3fa8</div></div></div>
+        <div class="chip-color"><div class="chip-sw" style="background:var(--xai)"></div><div class="chip-info"><div class="chip-name">xAI 퍼플</div><div class="chip-var">#6d4dbd</div></div></div>
+        <div class="chip-color"><div class="chip-sw" style="background:var(--ink)"></div><div class="chip-info"><div class="chip-name">잉크</div><div class="chip-var">#1f1e1c</div></div></div>
+      </div>
+      <p style="font-size:11.5px;color:var(--ink-3);margin-top:10px;line-height:1.6">학습자=그린, 교수자=인디고, AI 기능=퍼플. 이 구분을 전역에서 일관되게 유지합니다.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="card-h">Radius · Shadow · Spacing</div>
+    <div class="grid-4" style="margin-top:12px">
+      <div class="kv-row"><div class="kv-key">radius-sm</div><div class="kv-val">6px · 작은 칩</div></div>
+      <div class="kv-row"><div class="kv-key">radius</div><div class="kv-val">10px · 일반 카드</div></div>
+      <div class="kv-row"><div class="kv-key">radius-lg</div><div class="kv-val">14px · 히어로</div></div>
+      <div class="kv-row"><div class="kv-key">shadow-2</div><div class="kv-val">4px 14px · 인터랙티브</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     09. SUCCESS METRICS
+     ═══════════════════════════════════════════════════════════ -->
+<section id="ch9">
+  <div class="section-h">
+    <div class="section-num">09</div>
+    <div>
+      <div class="section-kicker">Success Metrics</div>
+      <div class="section-title">우리가 <em>무엇을</em> 측정하는가.</div>
+    </div>
+  </div>
+
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="metric"><div class="metric-lbl">North Star</div><div class="metric-val">70<em>%</em></div><div class="metric-sub">AI 판단에 "왜?" 클릭 비율 (이해 · 신뢰의 프록시)</div></div>
+    <div class="metric"><div class="metric-lbl">학생 성과</div><div class="metric-val">+15<em>%</em></div><div class="metric-sub">위험 학생 수업 복귀율 (개입 후 4주)</div></div>
+    <div class="metric"><div class="metric-lbl">교수 효율</div><div class="metric-val">-45<em>%</em></div><div class="metric-sub">채점 소요 시간 (AI 초안 활용)</div></div>
+    <div class="metric"><div class="metric-lbl">공정성</div><div class="metric-val">≤ 3<em>pt</em></div><div class="metric-sub">학년·성별·국적 점수 격차 임계치</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-h">Guardrail Metrics (지켜야 할 하한선)</div>
+      <table class="spec">
+        <tr><th>지표</th><th>목표</th></tr>
+        <tr><td>AI 채점 → 교수 수정률</td><td>10 ~ 20% (너무 낮으면 '승인 자동화' 위험)</td></tr>
+        <tr><td>AI 튜터 세션에서 "답 강요" 탐지</td><td>0건 / 학기</td></tr>
+        <tr><td>학생 프라이버시 설정 기본값</td><td>'비공유'</td></tr>
+        <tr><td>개입 메시지 전송 전 검토 비율</td><td>100%</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-h">Research Metrics (학습 과학)</div>
+      <table class="spec">
+        <tr><th>지표</th><th>관찰 기간</th></tr>
+        <tr><td>메타인지 체크 완료율</td><td>매 강의</td></tr>
+        <tr><td>간격 반복 학습 수용률</td><td>주 단위</td></tr>
+        <tr><td>소크라틱 대화 후 개념 점수 변화</td><td>퀴즈 전후</td></tr>
+        <tr><td>AI 요약 ↔ 원본 학습 비율</td><td>학기 말</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     10. ETHICS
+     ═══════════════════════════════════════════════════════════ -->
+<section id="ch10">
+  <div class="section-h">
+    <div class="section-num">10</div>
+    <div>
+      <div class="section-kicker">AI Ethics · Privacy</div>
+      <div class="section-title">윤리는 <em>기능 옆</em>에 둡니다.</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-h">데이터 흐름 3원칙</div>
+      <ol style="font-size:13px;color:var(--ink-2);line-height:1.85;padding-left:20px;margin-top:6px">
+        <li><strong>최소 수집</strong> — 기능에 필요한 만큼만. 수강 과목·학업 데이터까지. 외부 SNS·소비 데이터 0.</li>
+        <li><strong>최소 공유</strong> — 학생의 AI 대화·감정 체크는 교수자 비공유. 학생이 "공유" 버튼을 누를 때만.</li>
+        <li><strong>최소 저장</strong> — 위험 예측 로그는 1년 후 자동 삭제. IR 집계만 익명화 후 보존.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <div class="card-h">사용 금지 데이터</div>
+      <table class="spec">
+        <tr><th>항목</th><th>이유</th></tr>
+        <tr><td>성별 · 국적</td><td>개입 예측·추천에서 배제 (편향 원인)</td></tr>
+        <tr><td>건강 · 경제 상태</td><td>학습 플랫폼 범위 밖</td></tr>
+        <tr><td>AI 대화 원문</td><td>성적·평가에 사용 금지 (CYA)</td></tr>
+        <tr><td>감정 체크 결과</td><td>교수자 공개 금지 · 집계만 허용</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="callout xai" style="margin-top:16px">
+    <strong>AI 의사결정 기록 (ADM) —</strong> 장학·징계 등 법적 영향이 있는 결정에는 AI 단독 사용이 금지됩니다. 사람이 단독 결정하거나, 사람이 AI 입력을 명시적으로 검토한 기록이 남아야 합니다.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     11. ROADMAP
+     ═══════════════════════════════════════════════════════════ -->
+<section id="ch11">
+  <div class="section-h">
+    <div class="section-num">11</div>
+    <div>
+      <div class="section-kicker">Roadmap</div>
+      <div class="section-title">Q1 → Q4: <em>단단하게 → 멀리</em>.</div>
+    </div>
+  </div>
+
+  <div class="roadmap">
+    <div class="rm">
+      <div class="rm-phase">Q1 · Foundation</div>
+      <div class="rm-title">근거 있는 AI</div>
+      <ul>
+        <li>xAI 뱃지 · 근거 패널 · 신뢰도 바</li>
+        <li>학습자 대시보드 · 강의 수강 · 과제 (소크라틱)</li>
+        <li>교수자 티칭 홈 · 루브릭 빌더</li>
+        <li>편향 모니터 v1</li>
+      </ul>
+    </div>
+    <div class="rm">
+      <div class="rm-phase">Q2 · Tutor</div>
+      <div class="rm-title">학습 동반자</div>
+      <ul>
+        <li>Claritas Companion 소크라틱 모드</li>
+        <li>메타인지 체크 · 간격 반복 복습</li>
+        <li>AI 요약 · 자막 · 용어 툴팁</li>
+        <li>AI 투명성 로그 자동 첨부</li>
+      </ul>
+    </div>
+    <div class="rm">
+      <div class="rm-phase">Q3 · Intervene</div>
+      <div class="rm-title">조기 개입 · AI 채점</div>
+      <ul>
+        <li>이탈 예측 모델 v1 (F1 &gt; 0.8)</li>
+        <li>개입 메시지 초안 · 윤리 체크</li>
+        <li>AI 채점 초안 · 루브릭 매핑</li>
+        <li>공정성 시뮬레이션</li>
+      </ul>
+    </div>
+    <div class="rm">
+      <div class="rm-phase">Q4 · Scale</div>
+      <div class="rm-title">학기 인사이트 · IR</div>
+      <ul>
+        <li>학기 인사이트 리포트</li>
+        <li>⌘K 자연어 전역 검색</li>
+        <li>외국어 학습자 지원 (실시간 자막)</li>
+        <li>학과 · 단과대 대시보드</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     12. APPENDIX - CHANGES FROM PREVIOUS DOC
+     ═══════════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════
+     11·5. STANDARDS STACK (신규)
+     ═══════════════════════════════════════════════════════════ -->
+<section id="ch11b">
+  <div class="section-h">
+    <div class="section-num">11·5</div>
+    <div>
+      <div class="section-kicker">Standards Stack</div>
+      <div class="section-title">"We compose, <em>not replace</em>."</div>
+    </div>
+  </div>
+  <p class="section-lead">Claritas는 어떤 단일 표준도 대체하지 않습니다. <strong>OneRoster · LTI Advantage · Caliper · xAPI · CASE · CLR · Open Badges · EDU-API</strong>를 목적별로 정확히 배치합니다. xAPI 하나로 모든 걸 덮으려는 플랫폼이 실패한 자리를 표준 결합 전략으로 메웁니다.</p>
+
+  <div class="card">
+    <table class="spec">
+      <tr><th>레이어</th><th>표준</th><th>역할</th><th>주요 사용 화면</th><th>가드레일</th></tr>
+      <tr><td><strong>학사·수강</strong></td><td>OneRoster 1.2 · EDU-API</td><td>사용자·강좌·등록·역할 동기화</td><td>전체</td><td class="before">xAPI로 roster 대체 금지</td></tr>
+      <tr><td><strong>도구 연결</strong></td><td>LTI Advantage (Deep Linking · AGS · NRPS)</td><td>기존 LMS 내 Claritas 기능 launch</td><td>전체</td><td class="before">1.3 미만 레거시는 SAML+CSV 폴백</td></tr>
+      <tr><td><strong>학습 이벤트</strong></td><td>Caliper + xAPI Profile (<code>edulms.claritas.v1</code>)</td><td>교환 가치 있는 학습 경험</td><td>강의 수강 · 과제 · 토론</td><td class="before">internal 감사 이벤트와 분리</td></tr>
+      <tr><td><strong>내부 감사</strong></td><td>internal audit schema</td><td>AI 호출·모델 버전·열람 목적</td><td>모든 xAI 카드</td><td class="before">LRS에 억지 저장 금지</td></tr>
+      <tr><td><strong>역량 정렬</strong></td><td>CASE (CFItem · CFAssociation)</td><td>local concept ↔ 공식 역량</td><td>학습 설계 · 피드백 · Co-Creation</td><td class="before">exact/close/broad/narrowMatch 구분</td></tr>
+      <tr><td><strong>성취 증명</strong></td><td>CLR 2.0 + Open Badges 3.0 + W3C VC</td><td>학생에게 유리한 검증 가능 evidence</td><td>피드백 · 인사이트 · 커리어</td><td class="before"><strong>감시 지표는 CLR 금지</strong></td></tr>
+      <tr><td><strong>개인정보</strong></td><td>APPI + 동의 관리</td><td>동의·열람·삭제·목적 제한</td><td>전체</td><td class="before">기본 최소 수집</td></tr>
+    </table>
+  </div>
+
+  <div class="callout xai" style="margin-top:18px">
+    <strong>발표용 한 문장 —</strong> Claritas는 xAPI 하나로 모든 표준을 대체하지 않습니다. OneRoster와 EDU-API는 운영 데이터를, LTI Advantage는 도구 연결을, Caliper와 xAPI는 학습 이벤트를, CASE는 역량 식별자를, CLR은 검증 가능한 학습 성과를 담당합니다. 우리는 <strong>표준을 결합(compose)합니다, 대체하지 않습니다</strong>.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     11·6. xAI 카드 5요소 · Mei-waku Care (신규)
+     ═══════════════════════════════════════════════════════════ -->
+<section id="ch11c">
+  <div class="section-h">
+    <div class="section-num">11·6</div>
+    <div>
+      <div class="section-kicker">xAI Card · 5 Elements</div>
+      <div class="section-title">모든 AI 출력에 <em>근거·모델·불확실성·행동·측정</em>을 붙입니다.</div>
+    </div>
+  </div>
+  <p class="section-lead">기존 설계서의 "근거 + 신뢰도" 2요소를 <strong>5요소</strong>로 확장. CI 빌드 단계에서 누락 시 <strong>빌드 실패</strong>로 강제합니다.</p>
+
+  <div class="grid-3">
+    <div class="pattern-card"><h4>① Evidence · 근거</h4><p>판단에 쓰인 데이터 소스와 가중치. "수강 이력 +38, CASE +26, 선배 n=342 +19" 형태로 공개.</p></div>
+    <div class="pattern-card"><h4>② Model Version · 모델 버전</h4><p><code>pace_agent v1.2.0</code> 같은 semver로 명시. 문제 발생 시 정확히 어떤 모델이 그렇게 판단했는지 재현 가능.</p></div>
+    <div class="pattern-card"><h4>③ Uncertainty · 불확실성</h4><p>0–100% 신뢰도 + CI. 임계치(75%) 미만이면 "사람 검토 필수" 뱃지. 추정 불가 영역은 "측정 중"으로 표시.</p></div>
+    <div class="pattern-card"><h4>④ Recommended Actions · 권장 행동</h4><p>대안 2–3개 + 각각 expected effect + propensity overlap + 유사 사례 n. 단일 추천 대신 비교 가능한 선택지.</p></div>
+    <div class="pattern-card"><h4>⑤ Action Plan · 효과 측정 계획</h4><p>"2주 후 cluster RCT로 재측정" 식의 검증 예약. 효과 측정 불가능한 추천은 "정보성 인사이트"로만 표시.</p></div>
+    <div class="pattern-card"><h4>⑥ Mei-waku Care · 이의 제기</h4><p>모든 카드 하단에 상시 링크. 이의 접수 시 24시간 내 세그먼트 exclusion + 주간 재학습 배치에 negative label 반영.</p></div>
+  </div>
+
+  <div class="callout" style="margin-top:18px">
+    <strong>디자인 규약 —</strong> 화면상 모든 xAI 패널은 하단 footer에 <code>모델 v? · 2주 후 측정 예약 · [判断が違う 🚩]</code> 3요소를 반드시 렌더링. Storybook 스냅샷 100% 검증.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     11·7. 일본 시장 특화 · 낙인 방지 UX
+     ═══════════════════════════════════════════════════════════ -->
+<section id="ch11d">
+  <div class="section-h">
+    <div class="section-num">11·7</div>
+    <div>
+      <div class="section-kicker">Japan-first · 낙인 방지</div>
+      <div class="section-title"><em>Meiwaku · Honne/Tatemae · 敬語</em>를 코드에 담습니다.</div>
+    </div>
+  </div>
+  <p class="section-lead">"일본 문화 특화"는 슬로건이 아닙니다. UI·스키마·거버넌스에 실제 구현됩니다.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-h">낙인 방지 UX · 3중 강제</div>
+      <ol style="font-size:13px;color:var(--ink-2);line-height:1.9;padding-left:20px;margin-top:6px">
+        <li><strong>컴포넌트 레벨</strong> — 클래스 건강도 첫 화면은 <strong>항상 "반 단위 지원 3개"</strong>. 개별 명단은 한 번 더 클릭해야 보입니다. 학생 UI의 "위험·탈락" 단어는 사전에서 <strong>금지</strong>.</li>
+        <li><strong>서버 레벨</strong> — 개별 학생 데이터 API는 <code>purpose token</code> 없이 <strong>401</strong>. <code>instructor.data_access</code> 로그 5년 보존.</li>
+        <li><strong>클라이언트 레벨</strong> — 목적 미입력 시 프론트에서도 요청 차단. 감사 로그에 purpose · segment_id 기록.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <div class="card-h">Mei-waku 회수 루프</div>
+      <p style="font-size:12.5px;color:var(--ink-3);line-height:1.75">모든 AI 출력의 footer에 <strong>[判断が違う 🚩]</strong> 링크. 학생·교수 누구나 클릭 가능.<br><br>
+      접수 즉시 → <strong>24시간 내</strong> 해당 세그먼트 exclusion → 주간 재학습 배치에 negative label → 월간 Bias/Drift 리뷰 위원회에 통계 공개.</p>
+      <div class="row" style="gap:6px;margin-top:10px;flex-wrap:wrap">
+        <span class="tag tag-xai">Gate 1 — Build CI</span>
+        <span class="tag tag-xai">Gate 2 — Runtime 검증</span>
+        <span class="tag tag-xai">Gate 3 — 월간 Bias</span>
+        <span class="tag tag-xai">Gate 4 — Mei-waku 루프</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout xai" style="margin-top:18px">
+    <strong>정량 검증 약속 —</strong> 파일럿 내 <strong>Omotenashi 설문 n≥300</strong> · 학생 <strong>"주시감(監視感)" 지표 분기별 &lt; 2.5/5</strong> · Mei-waku 회수·반영률 &ge; 95% within 24h.
+  </div>
+</section>
+
+<section id="ch12">
+  <div class="section-h">
+    <div class="section-num">12</div>
+    <div>
+      <div class="section-kicker">Appendix · Changes</div>
+      <div class="section-title">기존 설계서 대비 <em>무엇이 달라졌는가</em>.</div>
+    </div>
+  </div>
+
+  <p class="section-lead">기존 "학습자/교수자 전체 화면 설계서"(260423 회의후수정)와 비교해 Claritas가 추가·개선한 항목입니다.</p>
+
+  <div class="card">
+    <table class="spec">
+      <tr><th style="width:20%">영역</th><th>기존 설계</th><th>Claritas (신규)</th></tr>
+      <tr>
+        <td><strong>AI 추천 설명</strong></td>
+        <td class="before">"상위 30% 학습자 패턴과 일치" 같은 단편 문구만</td>
+        <td class="after">✦ 소스별 가중치 공개 · 신뢰도 0–100% · 슬라이더 재계산</td>
+      </tr>
+      <tr>
+        <td><strong>AI 채점</strong></td>
+        <td class="before">"우수/보통/미흡" 카테고리만 표기</td>
+        <td class="after">✦ 루브릭 항목별 점수 · 학생 문장 인용 · 레벨 매핑 · 신뢰도 표시</td>
+      </tr>
+      <tr>
+        <td><strong>학생 개입</strong></td>
+        <td class="before">AI 메시지 초안 자동 생성 + 수정</td>
+        <td class="after">✦ 원인 xAI · 효과 예측(수단별) · 윤리 체크 · 과거 유사 사례</td>
+      </tr>
+      <tr>
+        <td><strong>AI 튜터</strong></td>
+        <td class="before">챗봇 우측 패널, 기본 질의응답</td>
+        <td class="after">✦ 소크라틱 모드 기본 · 투명성 로그 · 학업 정직성 정책 연동</td>
+      </tr>
+      <tr>
+        <td><strong>학습 데이터</strong></td>
+        <td class="before">진도율·점수 중심</td>
+        <td class="after">✦ 집중 윈도우 · 메타인지 · CASE 역량 · 감정 온도 (익명)</td>
+      </tr>
+      <tr>
+        <td><strong>디자인 톤</strong></td>
+        <td class="before">그린(#1D9E75) / 퍼플(#534AB7) 병용, 다수 톤</td>
+        <td class="after">✦ Claude 브랜드 통합 · 크림 배경 · Fraunces 이탤릭 · 퍼소나 색 유지</td>
+      </tr>
+      <tr>
+        <td><strong>IA · 내비게이션</strong></td>
+        <td class="before">기능 메뉴 중심 (탐색·참여·평가·인사이트)</td>
+        <td class="after">✦ 여정 중심 (오늘·강의·AI 동반자) + ⌘K 자연어 검색</td>
+      </tr>
+      <tr>
+        <td><strong>윤리 · 프라이버시</strong></td>
+        <td class="before">화면 수준 언급 없음</td>
+        <td class="after">✦ 7원칙 · 편향 모니터 · 최소 수집/공유/저장 · ADM 기록</td>
+      </tr>
+      <tr>
+        <td><strong>교수자 의사결정</strong></td>
+        <td class="before">대시보드에 숫자 나열</td>
+        <td class="after">✦ "오늘의 결정 3가지" 카드 (urgency·근거·수락/보류)</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<footer class="footer">
+  <span>Claritas · Design Specification v1.0 · 2026.04.24</span>
+  <span>연동 프로토타입: <a href="xAI_LMS_Prototype.html" style="color:var(--claude);text-decoration:underline">xAI_LMS_Prototype.html</a></span>
+</footer>
+
+</body>
+</html>

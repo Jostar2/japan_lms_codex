@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+.env
+generated/
+
+# Office binaries (excluded per user request — treat as artifacts, not tracked)
+*.pptx
+*.docx
+*.xlsx
+
+# Claude Code local session state
+.claude/settings.local.json
+
+# Codex logs (historical, large)
+review/_codex_log_*.txt
+review/dev-server/
+
+# Screenshots (binary; Claude Design regenerates)
+review/visual_checks/
+
+# OS junk
+Thumbs.db
+desktop.ini
+.DS_Store

@@ -1,0 +1,138 @@
+{
+  "version": "0.1.0",
+  "principle": "Conserve design, replace implementation structure.",
+  "workUnits": [
+    {
+      "id": "foundation.verify-gates",
+      "phase": 0,
+      "surface": "shared",
+      "kind": "verification",
+      "status": "done",
+      "summary": "Keep route, contract, interaction, accessibility, typecheck, and screenshot verification passing.",
+      "gates": ["verify:prototype"],
+      "routeKeys": [],
+      "dependencies": []
+    },
+    {
+      "id": "foundation.ci-core",
+      "phase": 0,
+      "surface": "shared",
+      "kind": "ci",
+      "status": "done",
+      "summary": "Run core formatting, typecheck, contract, route, interaction, accessibility, and capture checks in CI.",
+      "gates": ["format:check:core", "verify:prototype"],
+      "routeKeys": [],
+      "dependencies": ["foundation.verify-gates"]
+    },
+    {
+      "id": "shared.design-tokens",
+      "phase": 1,
+      "surface": "shared",
+      "kind": "architecture",
+      "status": "done",
+      "summary": "Extract prototype colors, spacing, radius, shadow, and persona semantics into shared tokens without redesign.",
+      "gates": ["typecheck", "verify:contracts", "verify:design-tokens"],
+      "routeKeys": [],
+      "dependencies": ["foundation.verify-gates"]
+    },
+    {
+      "id": "shared.app-shell",
+      "phase": 1,
+      "surface": "shared",
+      "kind": "architecture",
+      "status": "done",
+      "summary": "Create production app shell boundaries for topbar, left nav, main region, and AI context panel.",
+      "gates": ["typecheck", "verify:app-shell", "verify:prototype"],
+      "routeKeys": [],
+      "dependencies": ["shared.design-tokens"]
+    },
+    {
+      "id": "shared.w7-incident-seed",
+      "phase": 1,
+      "surface": "shared",
+      "kind": "architecture",
+      "status": "done",
+      "summary": "Extract typed W7/Lec2 Gini vs Entropy incident seed data shared by student lecture and instructor decision flows.",
+      "gates": ["typecheck", "verify:contracts"],
+      "routeKeys": ["student.lecture", "instructor.dashboard", "instructor.cocreation", "instructor.classhealth"],
+      "dependencies": ["foundation.verify-gates"]
+    },
+    {
+      "id": "student.lecture.view-model",
+      "phase": 2,
+      "surface": "student",
+      "kind": "migration",
+      "status": "done",
+      "summary": "Extract typed W7/Lec2 lecture incident data and non-visual student lecture view model.",
+      "gates": ["typecheck", "verify:contracts", "verify:student-lecture-model"],
+      "routeKeys": ["student.lecture"],
+      "dependencies": ["shared.w7-incident-seed", "shared.app-shell"]
+    },
+    {
+      "id": "student.lecture.ui-parity",
+      "phase": 2,
+      "surface": "student",
+      "kind": "migration",
+      "status": "done",
+      "summary": "Migrate student lecture UI with desktop visual parity before targeted improvements.",
+      "gates": ["verify:app-shell", "verify:prototype"],
+      "routeKeys": ["student.lecture"],
+      "dependencies": ["shared.w7-incident-seed", "student.lecture.view-model"]
+    },
+    {
+      "id": "instructor.dashboard.view-model",
+      "phase": 3,
+      "surface": "instructor",
+      "kind": "migration",
+      "status": "done",
+      "summary": "Extract teaching decision queue view model, including W7 material improvement decision.",
+      "gates": ["typecheck", "verify:contracts", "verify:instructor-dashboard-model"],
+      "routeKeys": ["instructor.dashboard"],
+      "dependencies": ["student.lecture.view-model"]
+    },
+    {
+      "id": "instructor.dashboard.ui-parity",
+      "phase": 3,
+      "surface": "instructor",
+      "kind": "migration",
+      "status": "next",
+      "summary": "Migrate instructor dashboard decision queue UI with the W7 student-to-instructor bridge intact.",
+      "gates": ["verify:app-shell", "verify:prototype"],
+      "routeKeys": ["instructor.dashboard"],
+      "dependencies": ["instructor.dashboard.view-model"]
+    },
+    {
+      "id": "instructor.cocreation.closed-loop",
+      "phase": 3,
+      "surface": "instructor",
+      "kind": "migration",
+      "status": "planned",
+      "summary": "Preserve Co-Creation approval and measurement loop for W7/Lec2 material intervention.",
+      "gates": ["typecheck", "verify:prototype"],
+      "routeKeys": ["instructor.cocreation", "instructor.classhealth"],
+      "dependencies": ["instructor.dashboard.ui-parity"]
+    },
+    {
+      "id": "shared.api-boundary",
+      "phase": 4,
+      "surface": "shared",
+      "kind": "architecture",
+      "status": "planned",
+      "summary": "Define service-grade API and event contracts for the shared LMS entities.",
+      "gates": ["typecheck", "verify:contracts"],
+      "routeKeys": [],
+      "dependencies": ["student.lecture.view-model", "instructor.dashboard.view-model"]
+    },
+    {
+      "id": "pilot.readiness-pack",
+      "phase": 5,
+      "surface": "shared",
+      "kind": "pilot",
+      "status": "planned",
+      "summary": "Prepare Decision Brief, LMS integration fit, APPI/IRB readiness, measurement protocol, and Japanese UX checklist.",
+      "gates": ["verify:contracts"],
+      "routeKeys": [],
+      "dependencies": ["shared.api-boundary"]
+    }
+  ]
+}

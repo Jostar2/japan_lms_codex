@@ -1,0 +1,258 @@
+{
+  "version": "0.1.0",
+  "product": {
+    "name": "Claritas",
+    "type": "Explainable University AI LMS",
+    "market": "Japan higher education",
+    "designSourceOfTruth": "xAI_LMS_Prototype.html"
+  },
+  "sharedEntities": [
+    "institution",
+    "term",
+    "course",
+    "section",
+    "user",
+    "role",
+    "enrollment",
+    "lecture",
+    "lecture-segment",
+    "assignment",
+    "submission",
+    "rubric",
+    "feedback-item",
+    "intervention",
+    "cohort-pattern",
+    "measurement-result",
+    "xai-evidence-item"
+  ],
+  "xaiEvidenceContract": {
+    "requiredFields": [
+      "intent",
+      "judgment",
+      "evidence",
+      "modelVersion",
+      "confidenceOrUncertainty",
+      "recommendedAction",
+      "humanApprovalState",
+      "measurementPlan"
+    ],
+    "studentLanguage": [
+      "Explain personal impact",
+      "Use action-oriented guidance",
+      "Avoid surveillance framing",
+      "Only expose anonymized cohort patterns"
+    ],
+    "instructorLanguage": [
+      "Expose evidence quality",
+      "Expose uncertainty",
+      "Expose approval and audit state",
+      "Separate cohort patterns from individual interventions"
+    ]
+  },
+  "surfaces": {
+    "student": {
+      "purpose": "Learner-facing workflows for guidance, recovery, assignments, feedback, and personal insight.",
+      "privacyBoundary": [
+        "May show personal recommendations",
+        "May show anonymized cohort signals as guidance",
+        "Must not show other student identities",
+        "Must not expose instructor grading uncertainty queues"
+      ],
+      "routes": [
+        {
+          "key": "student.dashboard",
+          "label": "대시보드",
+          "group": "오늘",
+          "entities": ["course", "enrollment", "xai-evidence-item"],
+          "migrationPriority": 1
+        },
+        {
+          "key": "student.today",
+          "label": "오늘의 학습",
+          "group": "오늘",
+          "entities": ["course", "lecture", "assignment", "xai-evidence-item"],
+          "migrationPriority": 8
+        },
+        {
+          "key": "student.explore",
+          "label": "강의 탐색",
+          "group": "강의",
+          "entities": ["course", "enrollment", "xai-evidence-item"],
+          "migrationPriority": 7
+        },
+        {
+          "key": "student.lecture",
+          "label": "강의 수강",
+          "group": "강의",
+          "entities": ["course", "lecture", "lecture-segment", "cohort-pattern", "xai-evidence-item"],
+          "migrationPriority": 2
+        },
+        {
+          "key": "student.assignment",
+          "label": "과제 · 토론",
+          "group": "강의",
+          "entities": ["assignment", "submission", "rubric", "xai-evidence-item"],
+          "migrationPriority": 3
+        },
+        {
+          "key": "student.feedback",
+          "label": "피드백",
+          "group": "강의",
+          "entities": ["feedback-item", "rubric", "submission", "xai-evidence-item"],
+          "migrationPriority": 4
+        },
+        {
+          "key": "student.companion",
+          "label": "학습 동반자",
+          "group": "Claritas AI",
+          "entities": ["course", "lecture", "xai-evidence-item"],
+          "migrationPriority": 6
+        },
+        {
+          "key": "student.insight-me",
+          "label": "나의 인사이트",
+          "group": "Claritas AI",
+          "entities": ["enrollment", "measurement-result", "xai-evidence-item"],
+          "migrationPriority": 5
+        }
+      ]
+    },
+    "instructor": {
+      "purpose": "Teaching-facing workflows for decision queues, design, grading, interventions, and measurement.",
+      "privacyBoundary": [
+        "May show cohort-level patterns",
+        "May show grading uncertainty for review",
+        "Must separate individual interventions from cohort material improvements",
+        "Must expose uncertainty and audit trails for AI recommendations"
+      ],
+      "routes": [
+        {
+          "key": "instructor.dashboard",
+          "label": "티칭 홈",
+          "group": "오늘",
+          "entities": ["course", "section", "cohort-pattern", "intervention", "xai-evidence-item"],
+          "migrationPriority": 1
+        },
+        {
+          "key": "instructor.today",
+          "label": "오늘 할 일",
+          "group": "오늘",
+          "entities": ["course", "intervention", "xai-evidence-item"],
+          "migrationPriority": 9
+        },
+        {
+          "key": "instructor.design",
+          "label": "학습 설계",
+          "group": "강의 운영",
+          "entities": ["course", "lecture", "rubric", "xai-evidence-item"],
+          "migrationPriority": 8
+        },
+        {
+          "key": "instructor.rubric",
+          "label": "루브릭 빌더",
+          "group": "강의 운영",
+          "entities": ["rubric", "assignment", "xai-evidence-item"],
+          "migrationPriority": 7
+        },
+        {
+          "key": "instructor.cocreation",
+          "label": "Co-Creation Studio",
+          "group": "강의 운영",
+          "entities": [
+            "course",
+            "lecture",
+            "lecture-segment",
+            "cohort-pattern",
+            "measurement-result",
+            "xai-evidence-item"
+          ],
+          "migrationPriority": 2
+        },
+        {
+          "key": "instructor.grading",
+          "label": "AI 평가 지원",
+          "group": "강의 운영",
+          "entities": ["submission", "rubric", "feedback-item", "xai-evidence-item"],
+          "migrationPriority": 3
+        },
+        {
+          "key": "instructor.classhealth",
+          "label": "클래스 건강도",
+          "group": "강의 운영",
+          "entities": ["section", "cohort-pattern", "measurement-result", "xai-evidence-item"],
+          "migrationPriority": 4
+        },
+        {
+          "key": "instructor.intervention",
+          "label": "학습 개입",
+          "group": "학생 지원",
+          "entities": ["enrollment", "intervention", "xai-evidence-item"],
+          "migrationPriority": 5
+        },
+        {
+          "key": "instructor.insights",
+          "label": "학기 인사이트",
+          "group": "학생 지원",
+          "entities": ["course", "section", "measurement-result", "xai-evidence-item"],
+          "migrationPriority": 6
+        }
+      ]
+    }
+  },
+  "closedLoops": [
+    {
+      "id": "w7-gini-entropy-incident",
+      "name": "W7/Lec2 Gini vs Entropy learning struggle",
+      "sharedEntities": [
+        "course",
+        "lecture",
+        "lecture-segment",
+        "cohort-pattern",
+        "measurement-result",
+        "xai-evidence-item"
+      ],
+      "studentVisible": true,
+      "instructorVisible": true,
+      "steps": [
+        {
+          "phase": "detect",
+          "surface": "student",
+          "route": "student.lecture",
+          "targetId": "seg-22pct",
+          "entity": "lecture-segment",
+          "privacy": "Personal guidance with anonymized cohort signal"
+        },
+        {
+          "phase": "aggregate",
+          "surface": "instructor",
+          "route": "instructor.dashboard",
+          "targetId": "decision-w7-cocreation",
+          "entity": "cohort-pattern",
+          "privacy": "Cohort-level aggregate, no student identity exposure"
+        },
+        {
+          "phase": "intervene",
+          "surface": "instructor",
+          "route": "instructor.cocreation",
+          "targetId": "step1-input",
+          "entity": "lecture",
+          "privacy": "Instructor-owned teaching material draft"
+        },
+        {
+          "phase": "measure",
+          "surface": "instructor",
+          "route": "instructor.classhealth",
+          "targetId": "impact-ledger-entry",
+          "entity": "measurement-result",
+          "privacy": "Aggregate outcome measurement"
+        }
+      ],
+      "expectedOutcomeMetrics": [
+        "pauseReplayRate",
+        "confirmationQuestionAccuracy",
+        "duplicateQuestionRate",
+        "studentPerceivedSurveillance"
+      ]
+    }
+  ]
+}

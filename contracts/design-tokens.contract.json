@@ -1,0 +1,241 @@
+{
+  "version": "0.1.0",
+  "source": "xAI_LMS_Prototype.html",
+  "principle": "Conserve existing prototype tokens. Do not introduce a new palette during migration.",
+  "rootTokens": {
+    "color": {
+      "background": {
+        "bg": {
+          "cssVariable": "--bg",
+          "value": "#faf9f5",
+          "role": "App background"
+        },
+        "surface": {
+          "cssVariable": "--surface",
+          "value": "#ffffff",
+          "role": "Primary panel surface"
+        },
+        "surface2": {
+          "cssVariable": "--surface-2",
+          "value": "#f4f2ec",
+          "role": "Subtle control and section surface"
+        },
+        "surface3": {
+          "cssVariable": "--surface-3",
+          "value": "#eceae1",
+          "role": "Stronger muted surface"
+        }
+      },
+      "text": {
+        "ink": {
+          "cssVariable": "--ink",
+          "value": "#1f1e1c",
+          "role": "Primary text"
+        },
+        "ink2": {
+          "cssVariable": "--ink-2",
+          "value": "#3d3c38",
+          "role": "Secondary text"
+        },
+        "ink3": {
+          "cssVariable": "--ink-3",
+          "value": "#6e6c66",
+          "role": "Accessible muted text"
+        },
+        "ink4": {
+          "cssVariable": "--ink-4",
+          "value": "#a8a59d",
+          "role": "Low-emphasis text; avoid for body copy"
+        }
+      },
+      "border": {
+        "line": {
+          "cssVariable": "--line",
+          "value": "#e6e3d9",
+          "role": "Default border"
+        },
+        "line2": {
+          "cssVariable": "--line-2",
+          "value": "#dcd8ca",
+          "role": "Stronger border"
+        }
+      },
+      "brand": {
+        "claude": {
+          "cssVariable": "--claude",
+          "value": "#c15f3c",
+          "role": "Claritas/AI warm accent"
+        },
+        "claudeSoft": {
+          "cssVariable": "--claude-soft",
+          "value": "#f3e0d5",
+          "role": "Claritas soft background"
+        },
+        "claudeInk": {
+          "cssVariable": "--claude-ink",
+          "value": "#7a3620",
+          "role": "Claritas text on soft background"
+        }
+      },
+      "persona": {
+        "student": {
+          "cssVariable": "--student",
+          "value": "#2f7a5a",
+          "role": "Student surface accent"
+        },
+        "studentSoft": {
+          "cssVariable": "--student-soft",
+          "value": "#dff0e7",
+          "role": "Student soft background"
+        },
+        "studentInk": {
+          "cssVariable": "--student-ink",
+          "value": "#164d36",
+          "role": "Student text on soft background"
+        },
+        "instructor": {
+          "cssVariable": "--instructor",
+          "value": "#4a3fa8",
+          "role": "Instructor surface accent"
+        },
+        "instructorSoft": {
+          "cssVariable": "--instructor-soft",
+          "value": "#e7e4f6",
+          "role": "Instructor soft background"
+        },
+        "instructorInk": {
+          "cssVariable": "--instructor-ink",
+          "value": "#2a2370",
+          "role": "Instructor text on soft background"
+        }
+      },
+      "status": {
+        "danger": {
+          "cssVariable": "--danger",
+          "value": "#b4452c",
+          "role": "Danger/error accent"
+        },
+        "dangerSoft": {
+          "cssVariable": "--danger-soft",
+          "value": "#f8e1d8",
+          "role": "Danger soft background"
+        },
+        "warn": {
+          "cssVariable": "--warn",
+          "value": "#a66a12",
+          "role": "Warning accent"
+        },
+        "warnSoft": {
+          "cssVariable": "--warn-soft",
+          "value": "#fae8cc",
+          "role": "Warning soft background"
+        },
+        "ok": {
+          "cssVariable": "--ok",
+          "value": "#2f7a5a",
+          "role": "Positive accent"
+        },
+        "okSoft": {
+          "cssVariable": "--ok-soft",
+          "value": "#dff0e7",
+          "role": "Positive soft background"
+        },
+        "xai": {
+          "cssVariable": "--xai",
+          "value": "#6d4dbd",
+          "role": "XAI/evidence accent"
+        },
+        "xaiSoft": {
+          "cssVariable": "--xai-soft",
+          "value": "#ece6f9",
+          "role": "XAI/evidence soft background"
+        }
+      }
+    },
+    "radius": {
+      "sm": {
+        "cssVariable": "--radius-sm",
+        "value": "6px",
+        "role": "Small controls"
+      },
+      "md": {
+        "cssVariable": "--radius",
+        "value": "10px",
+        "role": "Default cards and controls"
+      },
+      "lg": {
+        "cssVariable": "--radius-lg",
+        "value": "14px",
+        "role": "Large cards and panels"
+      },
+      "xl": {
+        "cssVariable": "--radius-xl",
+        "value": "20px",
+        "role": "Large feature containers"
+      }
+    },
+    "shadow": {
+      "level1": {
+        "cssVariable": "--shadow-1",
+        "value": "0 1px 0 rgba(20,18,14,.04), 0 1px 2px rgba(20,18,14,.03)",
+        "role": "Subtle elevation"
+      },
+      "level2": {
+        "cssVariable": "--shadow-2",
+        "value": "0 1px 0 rgba(20,18,14,.04), 0 2px 4px rgba(20,18,14,.04), 0 6px 16px -4px rgba(20,18,14,.06)",
+        "role": "Interactive elevation"
+      },
+      "level3": {
+        "cssVariable": "--shadow-3",
+        "value": "0 2px 0 rgba(20,18,14,.06), 0 8px 24px -4px rgba(20,18,14,.12), 0 20px 60px -10px rgba(20,18,14,.18)",
+        "role": "Modal/floating elevation"
+      },
+      "inset": {
+        "cssVariable": "--shadow-inset",
+        "value": "inset 0 0 0 1px rgba(20,18,14,.04)",
+        "role": "Inset border emphasis"
+      }
+    },
+    "motion": {
+      "standard": {
+        "cssVariable": "--ease-std",
+        "value": "cubic-bezier(.2,.6,.2,1)",
+        "role": "Standard transition easing"
+      },
+      "out": {
+        "cssVariable": "--ease-out",
+        "value": "cubic-bezier(.16,.84,.44,1)",
+        "role": "Exit/settle easing"
+      }
+    },
+    "typography": {
+      "serif": {
+        "cssVariable": "--font-serif",
+        "value": "\"Pretendard JP Variable\",\"Pretendard JP\",\"Pretendard\", \"Apple SD Gothic Neo\", sans-serif",
+        "role": "Display and brand type"
+      },
+      "sans": {
+        "cssVariable": "--font-sans",
+        "value": "\"Pretendard JP Variable\",\"Pretendard JP\",\"Pretendard\", -apple-system, BlinkMacSystemFont, \"Apple SD Gothic Neo\", \"Segoe UI\", sans-serif",
+        "role": "UI and body type"
+      }
+    }
+  },
+  "semanticRules": {
+    "studentSurface": ["--student", "--student-soft", "--student-ink"],
+    "instructorSurface": ["--instructor", "--instructor-soft", "--instructor-ink"],
+    "xaiEvidence": ["--xai", "--xai-soft"],
+    "defaultText": ["--ink", "--ink-2", "--ink-3"],
+    "lowContrastCaution": ["--ink-4"]
+  },
+  "componentOverrides": {
+    "warnTagText": {
+      "value": "#7a4700",
+      "reason": "Axe contrast fix while preserving warning hue family."
+    },
+    "xaiMetaText": {
+      "value": "#4b348f",
+      "reason": "Axe contrast fix for small xAI metadata."
+    }
+  }
+}
