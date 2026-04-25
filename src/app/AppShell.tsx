@@ -1,33 +1,70 @@
-import type { ReactNode } from "react";
+import type { KeyboardEvent, MouseEvent, ReactNode } from "react";
 import type { RouteKey, Surface, SurfaceRoute } from "../shared/lms-contract.js";
 
 interface AppShellProps {
+  activeAiTarget: string;
   aside: ReactNode;
   children: ReactNode;
   routeKey: RouteKey;
   routes: SurfaceRoute[];
   surface: Surface;
+  onAiTargetSelect: (targetId: string) => void;
   onRouteChange: (routeKey: RouteKey) => void;
   onSurfaceChange: (surface: Surface) => void;
 }
 
 export function AppShell({
+  activeAiTarget,
   aside,
   children,
   routeKey,
   routes,
   surface,
+  onAiTargetSelect,
   onRouteChange,
   onSurfaceChange,
 }: AppShellProps) {
+  function handleAiTargetClick(event: MouseEvent<HTMLDivElement>) {
+    const targetId = resolveAiTarget(event.target);
+    if (!targetId) return;
+
+    onAiTargetSelect(targetId);
+  }
+
+  function handleAiTargetKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+
+    const targetId = resolveAiTarget(event.target);
+    if (!targetId) return;
+
+    const element = event.target instanceof HTMLElement ? event.target : null;
+    const isNativeControl = element ? ["BUTTON", "A", "INPUT", "TEXTAREA"].includes(element.tagName) : false;
+    if (!isNativeControl) event.preventDefault();
+
+    onAiTargetSelect(targetId);
+  }
+
   return (
-    <div className={`claritas-shell ${surface === "student" ? "s-mode" : "i-mode"}`} data-surface={surface}>
+    <div
+      className={`claritas-shell ${surface === "student" ? "s-mode" : "i-mode"}`}
+      data-active-ai-target={activeAiTarget}
+      data-surface={surface}
+      onClickCapture={handleAiTargetClick}
+      onKeyDownCapture={handleAiTargetKeyDown}
+    >
       <Topbar surface={surface} onSurfaceChange={onSurfaceChange} />
       <LeftNav routeKey={routeKey} routes={routes} surface={surface} onRouteChange={onRouteChange} />
       <main className="app-main">{children}</main>
       {aside}
     </div>
   );
+}
+
+function resolveAiTarget(target: EventTarget | null): string | null {
+  if (!(target instanceof HTMLElement)) return null;
+
+  const targetElement = target.closest<HTMLElement>("[data-ai-target]");
+  return targetElement?.dataset.aiTarget ?? null;
 }
 
 interface TopbarProps {

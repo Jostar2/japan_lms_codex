@@ -23,9 +23,19 @@ const defaultRouteBySurface: Record<Surface, RouteKey> = {
   instructor: "instructor.dashboard",
 };
 
+const defaultAiTargetByRoute: Partial<Record<RouteKey, string>> = {
+  "student.lecture": "seg-22pct",
+  "instructor.dashboard": "decision-w7-cocreation",
+  "instructor.cocreation": "step1-input",
+  "instructor.classhealth": "impact-ledger-entry",
+};
+
 export function App() {
   const [surface, setSurface] = useState<Surface>("student");
   const [routeKey, setRouteKey] = useState<RouteKey>(defaultRouteBySurface.student);
+  const [activeAiTarget, setActiveAiTarget] = useState(
+    defaultAiTargetByRoute[defaultRouteBySurface.student] ?? "route",
+  );
   const routes = getSurfaceRoutes(surface);
   const route = getRouteContract(routeKey);
   const closedLoop = getClosedLoop("w7-gini-entropy-incident");
@@ -39,24 +49,28 @@ export function App() {
   }, []);
 
   function switchSurface(nextSurface: Surface) {
+    const nextRouteKey = defaultRouteBySurface[nextSurface];
     setSurface(nextSurface);
-    setRouteKey(defaultRouteBySurface[nextSurface]);
+    setRouteKey(nextRouteKey);
+    setActiveAiTarget(defaultAiTargetByRoute[nextRouteKey] ?? "route");
   }
 
   function navigateRoute(nextRouteKey: RouteKey) {
     setSurface(nextRouteKey.startsWith("student.") ? "student" : "instructor");
     setRouteKey(nextRouteKey);
+    setActiveAiTarget(defaultAiTargetByRoute[nextRouteKey] ?? "route");
   }
 
   return (
     <>
       <style>{tokenCss}</style>
       <AppShell
+        activeAiTarget={activeAiTarget}
         aside={
           studentLectureViewModel ? (
-            <StudentLectureAside viewModel={studentLectureViewModel} />
+            <StudentLectureAside activeAiTarget={activeAiTarget} viewModel={studentLectureViewModel} />
           ) : instructorDashboardViewModel ? (
-            <InstructorDashboardAside viewModel={instructorDashboardViewModel} />
+            <InstructorDashboardAside activeAiTarget={activeAiTarget} viewModel={instructorDashboardViewModel} />
           ) : (
             <AiContextPanel closedLoop={closedLoop} route={route} surface={surface} />
           )
@@ -64,6 +78,7 @@ export function App() {
         routeKey={routeKey}
         routes={routes}
         surface={surface}
+        onAiTargetSelect={setActiveAiTarget}
         onRouteChange={navigateRoute}
         onSurfaceChange={switchSurface}
       >

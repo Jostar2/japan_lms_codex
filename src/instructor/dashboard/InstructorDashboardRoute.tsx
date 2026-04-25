@@ -1,7 +1,9 @@
+import { AiInteractionPanel, type AiInteractionContext } from "../../app/AiInteractionPanel.js";
 import type { RouteKey } from "../../shared/lms-contract.js";
 import type { InstructorDashboardDecisionViewModel, InstructorDecisionCard } from "./view-model.js";
 
 interface InstructorDashboardRouteProps {
+  activeAiTarget?: string;
   viewModel: InstructorDashboardDecisionViewModel;
   onRouteChange: (routeKey: RouteKey) => void;
 }
@@ -180,18 +182,26 @@ const decisionProofs: Record<InstructorDecisionCard["targetId"], Array<{ label: 
 };
 
 interface InstructorDashboardAsideProps {
+  activeAiTarget?: string;
   viewModel: InstructorDashboardDecisionViewModel;
 }
 
-export function InstructorDashboardAside({ viewModel }: InstructorDashboardAsideProps) {
+export function InstructorDashboardAside({
+  activeAiTarget = "decision-w7-cocreation",
+  viewModel,
+}: InstructorDashboardAsideProps) {
+  const aiContext = getInstructorAiContext(viewModel, activeAiTarget);
+
   return (
     <aside className="app-aside instructor-dashboard-aside" aria-label="Instructor dashboard AI panel">
       <div className="aside-head">
         <div>
-          <div className="aside-title">{viewModel.aside.title}</div>
-          <div className="aside-sub">{viewModel.aside.subtitle}</div>
+          <div className="aside-title">AI 결정 보조</div>
+          <div className="aside-sub">선택 맥락 · {aiContext.scope}</div>
         </div>
       </div>
+
+      <AiInteractionPanel context={aiContext} key={activeAiTarget} tone="instructor" />
 
       <section className="question-trends-card" aria-label="Question trends">
         <div className="card-head">
@@ -200,10 +210,15 @@ export function InstructorDashboardAside({ viewModel }: InstructorDashboardAside
         </div>
         <div className="source-list">
           {viewModel.aside.questionTrends.map((trend) => (
-            <div className="source-item" data-ai-target={trend.targetId} key={trend.label}>
+            <button
+              className="source-item source-button"
+              data-ai-target={trend.targetId}
+              key={trend.label}
+              type="button"
+            >
               <span>"{trend.label}"</span>
               <span className="source-weight">{trend.count} 질문</span>
-            </div>
+            </button>
           ))}
         </div>
         <button className="btn btn-sm question-action" type="button">
@@ -239,4 +254,74 @@ export function InstructorDashboardAside({ viewModel }: InstructorDashboardAside
       </section>
     </aside>
   );
+}
+
+function getInstructorAiContext(
+  viewModel: InstructorDashboardDecisionViewModel,
+  targetId: string,
+): AiInteractionContext {
+  const contexts: Record<string, AiInteractionContext> = {
+    "decision-w7-cocreation": {
+      actionLabel: "Co-Creation 열기",
+      body: "W7/Lec2 22% 구간의 정지/반복과 질문 군집이 같은 개념에 모였습니다. AI는 자료 개선을 제안하지만 공개 전 교수자 승인이 필요합니다.",
+      confidenceLabel: "0.78",
+      evidence: ["정지/반복 42%", "관련 질문 42건", "예상 재시청률 -18~-26%"],
+      modeLabel: "결정 AI",
+      prompts: ["왜 우선순위 1인가요?", "대안 비교해줘", "측정 계획 만들어줘"],
+      response:
+        "가장 영향이 큰 이유는 같은 구간에서 시청 행동, 질문, 선수개념 신호가 동시에 모였기 때문입니다. 권장 조치는 기존 영상을 대체하지 않고 1분 비교 카드를 앞에 삽입한 뒤 재시청률과 확인 문제 정확도를 측정하는 것입니다.",
+      scope: "W7 자료 개선",
+      title: "자료 개선 결정을 설명합니다",
+    },
+    "decision-grading-uncertain-8": {
+      actionLabel: "8건 검토 시작",
+      body: "AI 초안 채점 중 루브릭 경계에 걸린 제출물만 교수자 검토 큐로 분리했습니다. 자동 확정은 하지 않습니다.",
+      confidenceLabel: "8건",
+      evidence: ["52건 중 초안 완료 32건", "확정 가능 24건", "경계 답안 8건 보류"],
+      modeLabel: "채점 AI",
+      prompts: ["왜 보류됐나요?", "검토 순서 정해줘", "피드백 톤 점검"],
+      response:
+        "보류된 답안은 실험 설계 근거는 있으나 재현성 설명이 짧은 유형입니다. 먼저 루브릭 A/B 경계 답안을 묶어 보고, 같은 기준으로 8건을 연속 검토하는 편이 일관성이 높습니다.",
+      scope: "채점 불확실",
+      title: "채점 보류 사유를 정리합니다",
+    },
+    "decision-intervention-6": {
+      actionLabel: "개입안 비교",
+      body: "3주 미접속과 과제 미제출이 동시에 나타난 학생군입니다. 사유를 단정하지 않고 지원 선택지를 비교합니다.",
+      confidenceLabel: "6명",
+      evidence: ["접속/제출 신호 약화", "개인 사유 단정 없음", "발송 전 교수자 승인 필요"],
+      modeLabel: "개입 AI",
+      prompts: ["메시지 초안 만들어줘", "오피스아워와 유예 비교", "민감도 점검"],
+      response:
+        "권장 초안은 '최근 학습 리듬이 끊긴 것 같아 선택 가능한 지원 경로를 안내합니다'처럼 판단보다 선택지를 앞세워야 합니다. 오피스아워, 보완자료, 마감유예를 비교한 뒤 교수자가 발송 여부를 승인합니다.",
+      scope: "학습 개입",
+      title: "지원 메시지를 안전하게 만듭니다",
+    },
+    "question-trend-gini": {
+      actionLabel: "공지 초안 만들기",
+      body: "지니와 엔트로피의 실무 차이에 대한 질문이 가장 많습니다. 공지는 답안 제공이 아니라 개념 경계 정리에 집중해야 합니다.",
+      confidenceLabel: "42질문",
+      evidence: ["질문 트렌드 1위", "W7/Lec2 구간과 연결", "중복 질문 감소 측정 가능"],
+      modeLabel: "공지 AI",
+      prompts: ["공지 초안 작성", "FAQ 3개로 압축", "학생용 예시 만들기"],
+      response:
+        "공지 초안은 '두 지표는 목적이 같고 계산 관점만 다릅니다'로 시작하고, 지니는 계산이 단순한 기준, 엔트로피는 정보량 관점의 기준으로 비교하면 됩니다. 마지막에는 과제 3에서 어떤 수준까지 요구하는지 명시하세요.",
+      scope: "질문 트렌드",
+      title: "반복 질문을 공지로 전환합니다",
+    },
+    "cohort-pattern-w7": {
+      actionLabel: "효과 지표 등록",
+      body: "반 단위 패턴은 개인 감시가 아니라 수업자료 개선을 위한 집계 신호입니다. 효과와 감시 인식 guardrail을 함께 봅니다.",
+      confidenceLabel: "집계",
+      evidence: ["수강생 128명 집계", "개인 식별 없음", "재시청률·정답률·감시 인식 측정"],
+      modeLabel: "측정 AI",
+      prompts: ["파일럿 지표 추천", "guardrail 설명", "Class Health로 보내기"],
+      response:
+        "효과 지표는 재시청률, 확인 문제 정확도, 중복 질문률입니다. guardrail은 '감시받는 느낌이 증가했는가'를 별도 문항으로 두어야 실제 파일럿에서 설득력이 생깁니다.",
+      scope: "반 단위 패턴",
+      title: "측정 가능한 개선으로 바꿉니다",
+    },
+  };
+
+  return contexts[targetId] ?? contexts[viewModel.decisionId];
 }

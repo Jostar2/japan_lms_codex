@@ -11,12 +11,14 @@
 - Four operating stats.
 - Decision queue with W7 Co-Creation, grading uncertainty, and intervention review.
 - Per-decision proof grid covering evidence, uncertainty, and measurement target.
-- Right-side question trend card, sentiment signal, and schedule.
+- Right-side AI decision panel with active context, evidence stack, suggested prompts, composer input, response card, question trend card, sentiment signal, and schedule.
 - Primary action from `decision-w7-cocreation` to `instructor.cocreation`.
 
 ## Product Standard
 
 The instructor dashboard is an approval and measurement surface, not a generic analytics dashboard. AI recommendations must expose evidence quality, uncertainty, human approval state, and measurement intent in the decision card itself.
+
+AI interactions must support instructor action: explain why a recommendation is prioritized, compare alternatives, draft communication, and register measurement/guardrail plans. Automatic execution is out of scope unless a human approval state is visible.
 
 ## Verification
 

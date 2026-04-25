@@ -49,6 +49,11 @@ try {
   await expectText(page, ".cohort-bridge", "교수자 집계", "student-to-instructor bridge");
   await expectCount(page, ".summary-bullet", 5, "student summary bullet count");
   await expectCount(page, ".transcript-row", 4, "student transcript row count");
+  await expectText(page, ".ai-interaction-panel", "현재 구간을 설명합니다", "default student AI context");
+  await page.locator(".learning-plan-actions .btn-student").click();
+  await expectText(page, ".ai-interaction-panel", "짧은 회복 경로", "student AI target switch");
+  await page.locator(".ai-prompt-row button").filter({ hasText: "쉬운 예시" }).click();
+  await expectText(page, ".ai-response-user", "쉬운 예시", "student AI prompt interaction");
   await expectNoA11yViolations(page, "student lecture app shell");
 
   await page.locator(".view-switch button").filter({ hasText: "교수자" }).click();
@@ -60,6 +65,9 @@ try {
   await expectCount(page, ".decision-card-react", 3, "instructor decision queue count");
   await expectText(page, ".decision-card-react.high", "W7/Lec2 자료 개선", "primary instructor decision");
   await expectText(page, ".question-trends-card", "지니 vs 엔트로피", "instructor question trend");
+  await expectText(page, ".ai-interaction-panel", "자료 개선 결정을 설명합니다", "default instructor AI context");
+  await page.locator(".question-trends-card .source-item").first().click();
+  await expectText(page, ".ai-interaction-panel", "반복 질문", "instructor AI target switch");
   await expectNoA11yViolations(page, "instructor dashboard app shell");
 
   await page.locator(".decision-card-react.high .btn-instructor").click();

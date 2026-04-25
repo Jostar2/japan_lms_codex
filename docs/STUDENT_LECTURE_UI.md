@@ -11,11 +11,13 @@
 - Summary and transcript panels.
 - Metacognition check linked to `metacog-check-3`.
 - Cohort bridge linked to `instructor.dashboard` / `decision-w7-cocreation`.
-- Route-specific right AI panel with heatmap, prerequisite, confirmation, peer cluster, and companion prompts.
+- Route-specific right AI panel with active `data-ai-target` context, evidence stack, suggested prompts, composer input, generated response card, heatmap, prerequisite, confirmation, peer cluster, and companion prompts.
 
 ## Product Standard
 
 The student lecture route should keep the core sequence visible above the fold on desktop: current segment, video, recovery path, and evidence callout. AI support must be framed as private learning recovery first; cohort signals may appear only as anonymized guidance.
+
+AI interactions must be grounded in the selected learning object: segment marker, transcript row, quick review path, metacognition check, or cohort bridge. The panel should answer what the learner can do next, not merely explain that AI exists.
 
 ## Verification
 

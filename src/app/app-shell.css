@@ -891,6 +891,11 @@ button {
   font-size: 12.5px;
 }
 
+button.aside-mini-card {
+  width: 100%;
+  text-align: left;
+}
+
 .aside-mini-card-head {
   margin-bottom: 5px;
   color: var(--ink);
@@ -920,6 +925,16 @@ button {
   gap: 10px;
   color: var(--ink-2);
   font-size: 12px;
+}
+
+.source-button {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
 }
 
 .source-weight {
@@ -2225,6 +2240,158 @@ button:hover {
   font-size: 12px;
 }
 
+.ai-interaction-panel {
+  display: grid;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid #d8c8ef;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #f8f4ff 0%, #fff 100%);
+  box-shadow:
+    0 1px 0 rgba(20, 18, 14, 0.04),
+    0 8px 24px -20px rgba(20, 18, 14, 0.34);
+}
+
+.ai-interaction-panel.student {
+  border-color: color-mix(in srgb, var(--student-soft) 72%, var(--line) 28%);
+  background: linear-gradient(180deg, #f6fbf8 0%, #fff 100%);
+}
+
+.ai-interaction-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ai-interaction-head span,
+.ai-context-summary span,
+.ai-evidence-stack div,
+.ai-response-user {
+  color: var(--ink-3);
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ai-interaction-head h2 {
+  margin: 3px 0 0;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.26;
+}
+
+.ai-interaction-head strong {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  padding: 2px 8px;
+  border: 1px solid #d8c8ef;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--xai);
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.ai-interaction-panel.student .ai-interaction-head strong {
+  border-color: var(--student-soft);
+  color: var(--student-ink);
+}
+
+.ai-context-summary {
+  padding: 10px 11px;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) - 2px);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.ai-context-summary p {
+  margin: 5px 0 0;
+  color: var(--ink-2);
+  font-size: 12.5px;
+}
+
+.ai-evidence-stack {
+  display: grid;
+  gap: 6px;
+}
+
+.ai-evidence-stack div {
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) - 3px);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.ai-prompt-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ai-prompt-row button {
+  padding: 5px 8px;
+  border: 1px solid #d8c8ef;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--xai);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.ai-interaction-panel.student .ai-prompt-row button {
+  border-color: var(--student-soft);
+  color: var(--student-ink);
+}
+
+.ai-compose {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 7px;
+}
+
+.ai-compose input {
+  min-width: 0;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--ink);
+  outline: 0;
+  font-size: 12px;
+}
+
+.ai-response-card {
+  display: grid;
+  gap: 8px;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) - 2px);
+  background: #fff;
+}
+
+.ai-response-user {
+  color: var(--xai);
+}
+
+.ai-interaction-panel.student .ai-response-user {
+  color: var(--student-ink);
+}
+
+.ai-response-body {
+  color: var(--ink);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
 @media (max-width: 1040px) {
   .claritas-shell {
     height: auto;
@@ -2367,6 +2534,10 @@ button:hover {
 
   .dashboard-command-bar div:last-of-type {
     border-bottom: 0;
+  }
+
+  .ai-compose {
+    grid-template-columns: 1fr;
   }
 
   .lecture-video {
