@@ -81,7 +81,15 @@ try {
   await expectText(page, ".ai-interaction-panel", "대안 선택 이유", "cocreation rationale AI context");
   await expectNoA11yViolations(page, "instructor cocreation app shell");
   await page.locator(".cocreation-effect-panel .btn-instructor").click();
-  await expectText(page, ".page-head h1", "클래스 건강도", "class health bridge navigation");
+  await expectText(page, ".classhealth-page", "반 전체에 효과", "class health bridge navigation");
+  await expectText(page, ".ai-interaction-panel", "폐루프 결과", "default class health AI context");
+  await page.locator(".clo-trend-card").click();
+  await expectText(page, ".ai-interaction-panel", "학습성과 회복", "class health CLO AI context");
+  await page.locator(".policy-memo-card .btn-instructor").click();
+  await expectText(page, ".ai-interaction-panel", "Course Blueprint", "class health policy AI context");
+  await page.locator(".purpose-access-box").click();
+  await expectText(page, ".ai-interaction-panel", "개별 식별 접근", "class health access AI context");
+  await expectNoA11yViolations(page, "instructor class health app shell");
 
   if (pageErrors.length || consoleErrors.length) {
     for (const error of pageErrors) console.error(`pageerror: ${error}`);

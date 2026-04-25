@@ -1,4 +1,4 @@
-import type { KeyboardEvent, MouseEvent, ReactNode } from "react";
+import { useEffect, useRef, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import type { RouteKey, Surface, SurfaceRoute } from "../shared/lms-contract.js";
 
 interface AppShellProps {
@@ -24,6 +24,12 @@ export function AppShell({
   onRouteChange,
   onSurfaceChange,
 }: AppShellProps) {
+  const mainRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    mainRef.current?.scrollTo({ top: 0, left: 0 });
+  }, [routeKey]);
+
   function handleAiTargetClick(event: MouseEvent<HTMLDivElement>) {
     const targetId = resolveAiTarget(event.target);
     if (!targetId) return;
@@ -54,7 +60,9 @@ export function AppShell({
     >
       <Topbar surface={surface} onSurfaceChange={onSurfaceChange} />
       <LeftNav routeKey={routeKey} routes={routes} surface={surface} onRouteChange={onRouteChange} />
-      <main className="app-main">{children}</main>
+      <main className="app-main" ref={mainRef}>
+        {children}
+      </main>
       {aside}
     </div>
   );
