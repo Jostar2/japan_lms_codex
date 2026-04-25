@@ -15,11 +15,6 @@ import {
   InstructorDashboardRoute,
 } from "../instructor/dashboard/InstructorDashboardRoute.js";
 import { getInstructorDashboardDecisionViewModel } from "../instructor/dashboard/view-model.js";
-import {
-  InstructorCocreationAside,
-  InstructorCocreationRoute,
-} from "../instructor/cocreation/InstructorCocreationRoute.js";
-import { getInstructorCocreationViewModel } from "../instructor/cocreation/view-model.js";
 import { StudentLectureAside, StudentLectureRoute } from "../student/lecture/StudentLectureRoute.js";
 import { getStudentLectureViewModel } from "../student/lecture/view-model.js";
 
@@ -47,8 +42,6 @@ export function App() {
   const studentLectureViewModel = routeKey === "student.lecture" ? getStudentLectureViewModel() : null;
   const instructorDashboardViewModel =
     routeKey === "instructor.dashboard" ? getInstructorDashboardDecisionViewModel() : null;
-  const instructorCocreationViewModel =
-    routeKey === "instructor.cocreation" ? getInstructorCocreationViewModel() : null;
 
   const tokenCss = useMemo(() => {
     const declarations = flattenDesignTokens().map((token) => `  ${token.cssVariable}: ${token.value};`);
@@ -78,8 +71,6 @@ export function App() {
             <StudentLectureAside activeAiTarget={activeAiTarget} viewModel={studentLectureViewModel} />
           ) : instructorDashboardViewModel ? (
             <InstructorDashboardAside activeAiTarget={activeAiTarget} viewModel={instructorDashboardViewModel} />
-          ) : instructorCocreationViewModel ? (
-            <InstructorCocreationAside activeAiTarget={activeAiTarget} viewModel={instructorCocreationViewModel} />
           ) : (
             <AiContextPanel closedLoop={closedLoop} route={route} surface={surface} />
           )
@@ -95,8 +86,6 @@ export function App() {
           <StudentLectureRoute viewModel={studentLectureViewModel} />
         ) : instructorDashboardViewModel ? (
           <InstructorDashboardRoute viewModel={instructorDashboardViewModel} onRouteChange={navigateRoute} />
-        ) : instructorCocreationViewModel ? (
-          <InstructorCocreationRoute viewModel={instructorCocreationViewModel} onRouteChange={navigateRoute} />
         ) : (
           <RouteWorkspace
             closedLoop={closedLoop}

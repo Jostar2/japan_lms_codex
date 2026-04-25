@@ -72,16 +72,6 @@ try {
 
   await page.locator(".decision-card-react.high .btn-instructor").click();
   await expectText(page, ".page-head h1", "Co-Creation Studio", "instructor route navigation");
-  await expectText(page, ".cocreation-page", "학생 막힘 입력", "cocreation incident input");
-  await expectCount(page, ".variant-card", 3, "cocreation variant count");
-  await expectText(page, ".ai-interaction-panel", "입력 신호", "default cocreation AI context");
-  await page.locator(".variant-card.selected").click();
-  await expectText(page, ".ai-interaction-panel", "선택된 보완안", "cocreation selected variant AI context");
-  await page.locator(".cocreation-rationale-band").click();
-  await expectText(page, ".ai-interaction-panel", "대안 선택 이유", "cocreation rationale AI context");
-  await expectNoA11yViolations(page, "instructor cocreation app shell");
-  await page.locator(".cocreation-effect-panel .btn-instructor").click();
-  await expectText(page, ".page-head h1", "클래스 건강도", "class health bridge navigation");
 
   if (pageErrors.length || consoleErrors.length) {
     for (const error of pageErrors) console.error(`pageerror: ${error}`);
