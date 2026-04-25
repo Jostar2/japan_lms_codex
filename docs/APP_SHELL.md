@@ -10,6 +10,7 @@
 - `src/app/RouteWorkspace.tsx` renders product-facing fallback workspaces for routes that have not been migrated into bespoke React screens yet. It must not expose internal route ids, contract names, or migration scaffolding as visible UI.
 - `src/app/AiContextPanel.tsx` renders route-aware evidence and privacy boundaries from `contracts/university-lms.contract.json`.
 - `src/app/app-shell.css` uses design tokens extracted from the prototype instead of introducing a new palette.
+- `src/instructor/cocreation/InstructorCocreationRoute.tsx` renders the first bespoke AI co-authoring workbench for professor-side material improvement and measurement.
 
 ## AI Interaction Rule
 
@@ -24,6 +25,8 @@ npm run verify:app-shell
 ```
 
 The smoke check starts Vite, opens `app.html`, verifies the default learner route, switches to the instructor surface, checks the 8/9 route split, and confirms the shared W7 closed-loop bridge remains visible.
+
+It also navigates from `instructor.dashboard` into `instructor.cocreation`, verifies AI context switching across input, variant, and rationale controls, and follows the effect bridge into `instructor.classhealth`.
 
 The full gate is still:
 
